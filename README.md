@@ -5,12 +5,16 @@
 > ./public
 
 #### Database Diagram (Banco de Dados)
-> ./diagrams/database
+> ./documentation/database
 
 #### Software Diagram (Engenharia de Software)
-> ./diagrams/software
+> ./documentation/software
 
 
 ---
-Create by: </br>
-Eduardo Pazzini Zancanaro <span style="color: #cdb4db">¤</span> Filipe Medeiros de Almeida <span style="color: #cdb4db">¤</span> João Gabriel Piva.
+Created by: </br>
+<span style="color: #cdb4db">¤</span> Eduardo Pazzini Zancanaro - eduardo.zancanaro@estudante.uffs.edu.br (2221101031) 
+
+<span style="color: #cdb4db">¤</span> Filipe Medeiros de Almeida - filipe.almeida@estudante.uffs.edu.br (2221101029) 
+
+<span style="color: #cdb4db">¤</span> João Gabriel Piva - joao.piva@estudante.uffs.edu.br (2221101009)

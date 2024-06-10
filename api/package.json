@@ -1,0 +1,16 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --watch --env-file=.env src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "API construída em JavaScript",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg-promise": "^11.8.0"
+  }
+}

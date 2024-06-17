@@ -27,7 +27,7 @@ docker compose up -d
 Rode a API utilizando o seguinte comando:
 
 ```sh
-    npm start
+npm start
 ```
 
  

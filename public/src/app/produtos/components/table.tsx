@@ -39,75 +39,88 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro"
+import { ModalCadastro } from "./modal-cadastro"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 
 const data: ClientType[] = [
   {
     id: "m5gr84i9",
-    fullName: "Eduardo Pazzini Zancanaro",
-    email: "e.pazzini@icloud.com",
-    avatar: "https://github.com/oduardu.png",
+    productName: "Vinho Seco",
+    descr: "Vinho de uva seca, com teor alcoólico de 12% e sabor marcante.",
+    price: 150.00,
+    bottleStock: 10,
   },
 ]
 
 export type ClientType = {
   id: string
-  fullName: string
-  avatar: string
-  email: string
+  productName: string 
+  descr: string
+  price: number
+  bottleStock: number
 }
 
 export const columns: ColumnDef<ClientType>[] = [
   {
-    accessorKey: "avatar",
-    header: "",
-    cell: ({ row }) => {
+    accessorKey: "productName",
+    header: ({ column }) => {
       return (
-        <Avatar className="w-6 h-6">
-          <AvatarImage src={row.getValue('avatar')} alt={`Foto de ${row.getValue('fullName')}`} />
-          <AvatarFallback>
-          {row.getValue('fullName') ? (row.getValue<string>('fullName').match(/(\b\S)?/g) || []).join("").match(/(^\S|\S$)?/g)?.join("").toUpperCase() : 'U'}
-        </AvatarFallback>
-      </Avatar>
+        <div className="text-center">
+          Nome
+        </div>
       )
     },
-  },
-  {
-    accessorKey: "fullName",
-    header: "Nome",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <div className="capitalize">{row.getValue("fullName")}</div>
+      <div className="text-center capitalize">
+        {row.getValue("productName")}
       </div>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "descr",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="text-center">
+          Descrição
+        </div>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => (
+      <div className="text-center capitalize">
+        {row.getValue("descr")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "price",
+    header: ({ column }) => {
+      return (
+        <div className="text-center">
+          Preço (R$)
+        </div>
+      )
+    },
+    cell: ({ row }) => <div className="text-center">{row.getValue("price")}</div>,
+  },
+  {
+    accessorKey: "bottleStock",
+    header: ({ column }) => {
+      return (
+        <div className="text-center">
+          Quantidade em Estoque (Garrafa)
+        </div>
+      )
+    },
+    cell: ({ row }) => <div className="text-center">{row.getValue("bottleStock")}</div>,
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-4 p-0">
               <span className="sr-only">Open menu</span>
               <DotsHorizontalIcon className="h-4 w-4" />
             </Button>
@@ -154,24 +167,16 @@ export function DataTable() {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between py-4">
-        <Input
-          placeholder="Pesquise pelo nome..."
-          value={(table.getColumn("fullName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("fullName")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="flex justify-end py-4">
         <div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="default" className="ml-auto shadow-sm">
-              Cadastrar <PlusIcon className="ml-2 h-4 w-4" />
-          </Button>
-        </DialogTrigger>
-        <ModalCadastro />
-        </Dialog>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="default" className="ml-auto shadow-sm">
+                Cadastrar <PlusIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <ModalCadastro />
+          </Dialog>
         </div>
       </div>
       <div className="rounded-md border">

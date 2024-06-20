@@ -17,17 +17,20 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { Badge } from '../ui/badge'
+import { ScanBarcode } from 'lucide-react'
+import { ModeToggle } from './buttons/toggle-mode'
  
 export function Header() {
   const pathname = usePathname()
   
   const links = [
-    { href: '/', label: 'Home' },
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/calendario', label: 'Calendário' },
     { href: '/produtos', label: 'Produtos' },
     { href: '/clientes', label: 'Clientes' },
-    { href: '/relatorios', label: 'Relatórios' },
+    { href: '/estoque', label: 'Estoque' },
+    { href: '/fornecedores', label: 'Fornecedores' },
+    { href: '/calculo', label: 'Calcúlos' },
   ]
   
   const user = {
@@ -38,7 +41,7 @@ export function Header() {
 
   return (
     <nav className='p-4 border-b-2 border-zinc-300 flex items-center gap-4'>
-      <Link href='/' className='flex flex-col justify-center items-center flex-[1]'>
+      <Link href='/dashboard' className='flex flex-col justify-center items-center flex-[1]'>
         <span className='font-semibold'>Dell Angelo</span>
         <span className='font-extralight'>Winehouse</span>
       </Link>
@@ -55,7 +58,13 @@ export function Header() {
           ))}
       </div>
       <div>
-          <Link href={'/logout'}><Button size={'default'} variant={'outline'}>Sair</Button></Link>
+          <Link href={'/solicitacao-compra'}><Button size={'default'} variant={'outline'} className='flex flex-row gap-3'><ScanBarcode size={16} /> Solicitação de Compra</Button></Link>
+      </div>
+      <div>
+          <Link href={'/logout'}><Button size={'default'} variant={'default'}>Sair</Button></Link>
+      </div>
+      <div>
+          <ModeToggle />
       </div>
       <div>
       <DropdownMenu>

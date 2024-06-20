@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-<div className="flex flex-col min-h-[100dvh]">
-      <header className="bg-zinc-100 px-4 pt-2 lg:px-6 h-24 flex items-center fixed w-full shadow-sm">
+    <div className="flex flex-col min-h-[100dvh]">
+      <header className="bg-zinc-100 px-4 pt-2 lg:px-6 h-24 flex items-center w-full shadow-sm xl:fixed">
       <Link href='/' className='flex flex-col justify-center items-center text-2xl'>
         <span className='font-semibold'>Dell Angelo</span>
         <span className='font-extralight'>Winehouse</span>

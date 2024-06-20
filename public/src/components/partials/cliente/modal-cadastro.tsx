@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { FormCadastro } from "./form-cadastro"
+import { FormCadastro } from "@/components/partials/cliente/form-cadastro"
 
 
 export function ModalCadastro() {

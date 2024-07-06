@@ -11,6 +11,7 @@ services:
       - POSTGRES_DB=winehouse
     volumes:
       - winehouse_pg_data:/bitnami/postgresql
+      - ./src/database/script.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
 volumes:
   winehouse_pg_data:

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -44,6 +43,11 @@ export default function Register() {
       type: "background",
       variant: response.ok ? "default" : "destructive",
     });
+
+    response.ok && setTimeout(() => {
+      window.location.href = "/login";
+    }, 6000);
+
   };
 
   return (

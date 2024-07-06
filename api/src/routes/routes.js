@@ -2,7 +2,7 @@ const app = require('express')
 const router = app.Router()
 
 const auth = require('../authRoutes/auth')
-const stock = require('../cruds/stock')
+const client = require('../cruds/client')
 const product = require('../cruds/product')
 const supplier = require('../cruds/supplier')
 

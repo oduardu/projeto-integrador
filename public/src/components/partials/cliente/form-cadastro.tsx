@@ -30,6 +30,37 @@ const formSchema = z.object({
 })
 
 export function FormCadastro() {
+  const EstadosBrasil = [
+    { value: "AC", label: "Acre" },
+    { value: "AL", label: "Alagoas" },
+    { value: "AP", label: "Amapá" },
+    { value: "AM", label: "Amazonas" },
+    { value: "BA", label: "Bahia" },
+    { value: "CE", label: "Ceará" },
+    { value: "DF", label: "Distrito Federal" },
+    { value: "ES", label: "Espírito Santo" },
+    { value: "GO", label: "Goiás" },
+    { value: "MA", label: "Maranhão" },
+    { value: "MT", label: "Mato Grosso" },
+    { value: "MS", label: "Mato Grosso do Sul" },
+    { value: "MG", label: "Minas Gerais" },
+    { value: "PA", label: "Pará" },
+    { value: "PB", label: "Paraíba" },
+    { value: "PR", label: "Paraná" },
+    { value: "PE", label: "Pernambuco" },
+    { value: "PI", label: "Piauí" },
+    { value: "RJ", label: "Rio de Janeiro" },
+    { value: "RN", label: "Rio Grande do Norte" },
+    { value: "RS", label: "Rio Grande do Sul" },
+    { value: "RO", label: "Rondônia" },
+    { value: "RR", label: "Roraima" },
+    { value: "SC", label: "Santa Catarina" },
+    { value: "SP", label: "São Paulo" },
+    { value: "SE", label: "Sergipe" },
+    { value: "TO", label: "Tocantins" }
+];
+
+
   const [identifier, changeIndetifier] = useState('cpf')
 
   const formRegister = useForm<z.infer<typeof formSchema>>({
@@ -170,6 +201,73 @@ export function FormCadastro() {
           />
         )}
 
+        <Separator className="w-full px-5" />
+        
+        <FormField
+          control={formRegister.control}
+          name="cidade"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Cidade</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Chapecó" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-5 items-center gap-4">
+          <Label className="text-right">Estado</Label>
+            <Select defaultValue="sc" onValueChange={(value) => changeIndetifier(value)}>
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Selecione o estado" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {EstadosBrasil.map((estado) => (
+                    <SelectItem key={estado.value} value={estado.value}>{estado.label}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+        </div>
+
+        <FormField
+          control={formRegister.control}
+          name="rua"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Rua</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Rua Exemplo" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={formRegister.control}
+          name="numero"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Número</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Rua Tal de Tal" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        {/* rua  */}
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>
         </div>

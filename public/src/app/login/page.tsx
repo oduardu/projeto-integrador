@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast"
-import { useEffect } from "react";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export default function Login() {
   const { toast } = useToast()
@@ -18,24 +19,29 @@ export default function Login() {
             <span className='font-extralight'>Winehouse</span>
           </div>
         </div>
-        <div className="flex-[1] min-h-screen flex items-center justify-center">
-          <Card className="w-[340px]">
-            <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>Digite seu e-mail abaixo para fazer login em sua conta.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="flex flex-col gap-4">
-                <div className="grid items-center content-center gap-4 text-zinc-800">
-                  <Input type="email" placeholder="nome@email.com" alt="Digite seu email" />
-                </div>
-                <div className="grid items-center gap-4 text-zinc-800">
-                  <Input type="password" placeholder="Senha" alt="Digite sua senha" />
-                </div>
-                <Button type="submit" className="mx-auto w-32">Entrar</Button>
-              </form>
-            </CardContent>
-          </Card>
+        <div className="flex-[1] min-h-screen flex items-center justify-center dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2]">
+        <div className="backdrop-blur-[1px]">
+            <Card className="w-[340px]">
+              <CardHeader>
+                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardDescription>Digite seu e-mail abaixo para fazer login em sua conta.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form className="flex flex-col gap-4">
+                  <div className="grid items-center content-center gap-4">
+                    <Input type="email" placeholder="nome@email.com" alt="Digite seu email" />
+                  </div>
+                  <div className="grid items-center gap-4">
+                    <Input type="password" placeholder="Senha" alt="Digite sua senha" />
+                  </div>
+                  <div className="flex row items-stretch justify-center">
+                    <Button type="submit" className="mx-auto w-32">Entrar</Button>
+                    <Link href="/register" className="mx-auto w-32 flex justify-center items-center gap-1 hover:text-zinc-300">Registrar-se <ChevronRight className="w-5 h-5" /></Link>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </>

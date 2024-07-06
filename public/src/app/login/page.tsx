@@ -1,15 +1,43 @@
-"use client"
+'use client'
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+// import { useToast } from "@/components/ui/use-toast";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useState } from 'react';
 
 export default function Login() {
-  const { toast } = useToast()
+  // const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:5672/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return;
+      }
+
+      const data = await response.json();
+      localStorage.setItem('token', data.token); 
+
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    }
+  };
 
   return (
     <>
@@ -28,14 +56,28 @@ export default function Login() {
                 <CardDescription>Digite seu e-mail abaixo para fazer login em sua conta.</CardDescription>
               </CardHeader>
               <CardContent>
-                <form className="flex flex-col gap-4">
+                <form className="flex flex-col gap-4" onSubmit={handleLogin}>
                   <div className="grid items-center content-center gap-4">
                     <Label htmlFor="email" className="text-zinc-200">Mail</Label>
-                    <Input id="email" type="email" placeholder="nome@email.com" alt="Digite seu email" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="nome@email.com"
+                      alt="Digite seu email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                   </div>
                   <div className="grid items-center gap-4">
                     <Label htmlFor="password" className="text-zinc-200">Password</Label>
-                    <Input id="password" type="password" placeholder="Senha" alt="Digite sua senha" />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Senha"
+                      alt="Digite sua senha"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
                   </div>
                   <div className="flex row items-stretch justify-center">
                     <Button type="submit" className="mx-auto w-32">Entrar</Button>

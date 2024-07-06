@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
         return res.status(400).send('O usuário já existe')
       }
   
-      await db.none('INSERT INTO users (nome, email, senha) VALUES ($1, $2, $3)', [name, email, hashedPassword])
+      await db.none('INSERT INTO usuario (nome, email, senha) VALUES ($1, $2, $3)', [name, email, hashedPassword])
       res.status(201).send('Usuário registrado com sucesso')
     } catch (error) {
       console.error(error)

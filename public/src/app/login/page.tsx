@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/components/ui/use-toast"
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { Label } from "@/components/ui/label";
 
 export default function Login() {
   const { toast } = useToast()
@@ -13,7 +14,7 @@ export default function Login() {
   return (
     <>
       <main className="flex">
-        <div className="flex-[1] bg-[url('https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] min-h-screen backdrop:blur-sm flex flex-col justify-center items-center text-7xl overflow-hidden text-zinc-100">
+        <div className="flex-[1] bg-[url('https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] min-h-screen backdrop:blur-sm flex-col justify-center items-center text-7xl overflow-hidden text-zinc-100 md:flex hidden">
           <div className="backdrop-blur-[1.25px] flex flex-col p-5">
             <span className='font-semibold'>Dell Angelo</span>
             <span className='font-extralight'>Winehouse</span>
@@ -29,10 +30,12 @@ export default function Login() {
               <CardContent>
                 <form className="flex flex-col gap-4">
                   <div className="grid items-center content-center gap-4">
-                    <Input type="email" placeholder="nome@email.com" alt="Digite seu email" />
+                    <Label htmlFor="email" className="text-zinc-200">Mail</Label>
+                    <Input id="email" type="email" placeholder="nome@email.com" alt="Digite seu email" />
                   </div>
                   <div className="grid items-center gap-4">
-                    <Input type="password" placeholder="Senha" alt="Digite sua senha" />
+                    <Label htmlFor="password" className="text-zinc-200">Password</Label>
+                    <Input id="password" type="password" placeholder="Senha" alt="Digite sua senha" />
                   </div>
                   <div className="flex row items-stretch justify-center">
                     <Button type="submit" className="mx-auto w-32">Entrar</Button>

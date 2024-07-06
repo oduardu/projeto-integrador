@@ -4,41 +4,46 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+type ReturnJsonApi = {
+  title: string;
+  description: string;
+}
+
 export default function Register() {
+  const { toast } = useToast()
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null); 
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    try {
-      const response = await fetch("http://localhost:1234/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
-      });
+    const response = await fetch("http://localhost:5672/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+      
+    const data: ReturnJsonApi = await response.json();
 
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage);
-      }
-
-    } catch (error: any) { 
-      console.error("Erro ao registrar usuário:", error.message);
-      setError("Erro ao registrar usuário. Verifique seus dados e tente novamente.");
-    }
+    toast({
+      title: data.title,
+      description: data.description,
+      type: "background",
+      variant: response.ok ? "default" : "destructive",
+    });
   };
 
   return (
@@ -68,7 +73,6 @@ export default function Register() {
                   <Label htmlFor="password" className="text-zinc-200">Senha</Label>
                   <Input id="password" type="password" placeholder="" alt="Digite sua senha" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                {error && <p className="text-red-500">{error}</p>}
                 <div className="flex row items-stretch justify-center">
                   <Button type="submit" className="mx-auto w-32">Entrar</Button>
                   <Link href="/login" className="mx-auto w-32 flex justify-center items-center gap-1"><ChevronLeft className="w-5 h-5" /> Login</Link>

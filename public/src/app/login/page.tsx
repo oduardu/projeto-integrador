@@ -4,39 +4,52 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from 'react';
 
+type ReturnJsonApi = {
+  title: string;
+  description: string;
+  token: string;
+}
+
 export default function Login() {
-  // const { toast } = useToast();
+  const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch('http://localhost:5672/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    const response = await fetch('http://localhost:5672/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        return;
-      }
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token); 
-
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
+    if (!response.ok) {
+      const errorData = await response.json();
+      return;
     }
+
+    const data: ReturnJsonApi = await response.json();
+
+    localStorage.setItem('token', data.token);
+
+    toast({
+      title: data.title,
+      description: data.description,
+      type: "background",
+      variant: response.ok ? "default" : "destructive",
+    });
+
+    response.ok && setTimeout(() => {
+      window.location.href = "/login";
+    }, 6000);
   };
 
   return (

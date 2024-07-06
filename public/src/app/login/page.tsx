@@ -31,11 +31,6 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      return;
-    }
-
     const data: ReturnJsonApi = await response.json();
 
     localStorage.setItem('token', data.token);

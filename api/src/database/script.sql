@@ -32,7 +32,7 @@ CREATE TABLE insumo (
     quantidadeEstoque NUMERIC(10, 2) NOT NULL
 );
 
-CREATE TABLE vinhoUva (
+CREATE TABLE vinho_uva (
     idUva INTEGER NOT NULL,
     idVinho INTEGER NOT NULL,
 
@@ -41,7 +41,7 @@ CREATE TABLE vinhoUva (
     PRIMARY KEY (idUva, idVinho)
 );
 
-CREATE TABLE vinhoInsumo (
+CREATE TABLE vinho_insumo (
     idInsumo INTEGER NOT NULL,
     idVinho INTEGER NOT NULL,
 
@@ -66,7 +66,7 @@ CREATE TABLE produto (
     quantidadeEstoque INTEGER NOT NULL
 );
 
-CREATE TABLE garrafaProduto (
+CREATE TABLE garrafa_produto (
     codigoGarrafa VARCHAR(50) NOT NULL,
     codigoProduto VARCHAR(50) NOT NULL,
     PRIMARY KEY (codigoGarrafa, codigoProduto),
@@ -74,7 +74,7 @@ CREATE TABLE garrafaProduto (
     FOREIGN KEY (codigoProduto) REFERENCES produto(codigo)
 );
 
-CREATE TABLE historicoProduto (
+CREATE TABLE historico_produto (
     data DATE NOT NULL,
     hora TIME NOT NULL,
     preco NUMERIC(10, 2) NOT NULL,
@@ -83,6 +83,25 @@ CREATE TABLE historicoProduto (
 
     PRIMARY KEY (data, hora),
     FOREIGN KEY (produto) REFERENCES produto(codigo)
+);
+
+CREATE TABLE cliente (
+    cpf VARCHAR(14) UNIQUE,
+    cnpj VARCHAR(18) UNIQUE,
+    nome VARCHAR(50) NOT NULL,
+    telefone INTEGER NOT NULL,
+    rua VARCHAR(100) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    cidade VARCHAR(50) NOT NULL,
+    estado VARCHAR(2) NOT NULL,
+
+    PRIMARY KEY (cpf, cnpj)
+);
+
+CREATE TABLE usuario (
+    email VARCHAR(60) PRIMARY KEY NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    senha VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE pedido (
@@ -97,7 +116,7 @@ CREATE TABLE pedido (
     FOREIGN KEY (usuarioFatura) REFERENCES usuario(email)
 );
 
-CREATE TABLE produtoPedido (
+CREATE TABLE produto_pedido (
     codigoProduto VARCHAR(50) NOT NULL,
     idPedido INTEGER NOT NULL,
 
@@ -106,27 +125,7 @@ CREATE TABLE produtoPedido (
     FOREIGN KEY (idPedido) REFERENCES pedido(id)
 );
 
-CREATE TABLE cliente (
-    cpf VARCHAR(14),
-    cnpj VARCHAR(18),
-    nome VARCHAR(50) NOT NULL,
-    rua VARCHAR(100) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
-    cidade VARCHAR(50) NOT NULL,
-    estado VARCHAR(2) NOT NULL,
-
-    PRIMARY KEY (cpf, cnpj)
-);
-
-CREATE TABLE usuario (
-    email VARCHAR(60) NOT NULL,
-    nome VARCHAR(50) NOT NULL,
-    senha VARCHAR(60) NOT NULL,
-
-    PRIMARY KEY (email)
-);
-
-CREATE TABLE etapaProducao (
+CREATE TABLE etapa_producao (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,
     descricao VARCHAR(100) NOT NULL,

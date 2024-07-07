@@ -1,12 +1,10 @@
 "use client"
 
-import * as React from "react"
 import {
-  CaretSortIcon,
-  PlusIcon,
-  DotsHorizontalIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  DotsHorizontalIcon,
+  PlusIcon
 } from "@radix-ui/react-icons"
 import {
   ColumnDef,
@@ -20,8 +18,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import * as React from "react"
 
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +30,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -40,29 +39,17 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ModalCadastro } from "./modal-cadastro"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-
-const data: ClientType[] = [
-  {
-    id: "m5gr84i9",
-    productName: "Vinho Seco",
-    descr: "Vinho de uva seca, com teor alcoólico de 12% e sabor marcante.",
-    price: 150.00,
-    bottleStock: 10,
-  },
-]
 
 export type ClientType = {
-  id: string
-  productName: string 
-  descr: string
-  price: number
-  bottleStock: number
+  codigo: string
+  name: string 
+  descricao: string
+  quantidade_estoque: number
 }
 
 export const columns: ColumnDef<ClientType>[] = [
   {
-    accessorKey: "productName",
+    accessorKey: "nome",
     header: ({ column }) => {
       return (
         <div className="text-center">
@@ -72,12 +59,12 @@ export const columns: ColumnDef<ClientType>[] = [
     },
     cell: ({ row }) => (
       <div className="text-center capitalize">
-        {row.getValue("productName")}
+        {row.getValue("nome")}
       </div>
     ),
   },
   {
-    accessorKey: "descr",
+    accessorKey: "descricao",
     header: ({ column }) => {
       return (
         <div className="text-center">
@@ -87,23 +74,12 @@ export const columns: ColumnDef<ClientType>[] = [
     },
     cell: ({ row }) => (
       <div className="text-center capitalize">
-        {row.getValue("descr")}
+        {row.getValue("descricao")}
       </div>
     ),
   },
   {
-    accessorKey: "price",
-    header: ({ column }) => {
-      return (
-        <div className="text-center">
-          Preço (R$)
-        </div>
-      )
-    },
-    cell: ({ row }) => <div className="text-center">{row.getValue("price")}</div>,
-  },
-  {
-    accessorKey: "bottleStock",
+    accessorKey: "quantidade_estoque",
     header: ({ column }) => {
       return (
         <div className="text-center">
@@ -111,7 +87,7 @@ export const columns: ColumnDef<ClientType>[] = [
         </div>
       )
     },
-    cell: ({ row }) => <div className="text-center">{row.getValue("bottleStock")}</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue("quantidade_estoque")}</div>,
   },
   {
     id: "actions",
@@ -138,13 +114,24 @@ export const columns: ColumnDef<ClientType>[] = [
 ]
 
 export function DataTable() {
+  const [data, setData] = React.useState<ClientType[]>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  React.useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("http://localhost:5672/product")
+        const result = await response.json()
+        setData(result)
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error)
+      }
+    }
+    fetchData()
+  }, [])
 
   const table = useReactTable({
     data,

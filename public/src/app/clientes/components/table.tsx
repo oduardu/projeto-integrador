@@ -61,16 +61,28 @@ export const DataTable: React.FC = () => {
 
   // Função para buscar todos os clientes do banco de dados
   const fetchClients = async () => {
-    try {
-      const response = await fetch("http://localhost:5672/client");
-      if (!response.ok) {
-        throw new Error("Erro ao buscar clientes");
-      }
-      const data = await response.json();
-      setClients(data);
-    } catch (error) {
-      console.error("Erro ao buscar clientes:", error);
-    }
+    const cliente = {
+      nome: "Dell Angelo",
+      email: "dellangelod@gmail.com",
+      telefone: 11999999999,
+      rua: "Rua dos Bobos",
+      numero: 0,
+      cidade: "São Paulo",
+      estado: "SP"
+    };
+
+    setClients([cliente]);
+
+    // try {
+    //   const response = await fetch("http://localhost:5672/client");
+    //   if (!response.ok) {
+    //     throw new Error("Erro ao buscar clientes");
+    //   }
+    //   const data = await response.json();
+    //   setClients(data);
+    // } catch (error) {
+    //   console.error("Erro ao buscar clientes:", error);
+    // }
   };
 
   React.useEffect(() => {
@@ -116,7 +128,7 @@ export const DataTable: React.FC = () => {
           </Button>
         );
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("telefone")}</div>,
+      cell: ({ row }) => <div className="lowercase">{row.getValue<number>("telefone").toString().replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4")}</div>,
     },
     {
       id: "actions",
@@ -169,9 +181,9 @@ export const DataTable: React.FC = () => {
       <div className="flex justify-between py-4">
         <Input
           placeholder="Pesquise pelo nome..."
-          value={(table.getColumn("fullName")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("nome")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("fullName")?.setFilterValue(event.target.value)
+            table.getColumn("nome")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -220,7 +232,7 @@ export const DataTable: React.FC = () => {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-12 text-center"
                 >
                   Nenhum cliente encontrado...
                 </TableCell>

@@ -29,17 +29,6 @@ exports.getAllSuppliers = async (req, res) => {
     }
 };
 
-exports.getSupplierByName = async (req, res) => {
-    const { name } = req.query;
-    try {
-        const fornecedores = await db.any('SELECT * FROM fornecedor WHERE nome ILIKE $1', [`%${name}%`]);
-        res.status(200).json(fornecedores);
-    } catch (error) {
-        console.error('Erro ao listar fornecedores por nome:', error);
-        res.status(500).json({ message: 'Erro ao listar fornecedores por nome' });
-    }
-};
-
 exports.updateSupplier = async (req, res) => {
     const identifier = req.params.identifier; 
 

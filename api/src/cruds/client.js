@@ -37,17 +37,6 @@ exports.getAllClients = async (req, res) => {
     }
 };
 
-exports.getClientByName = async (req, res) => {
-    const { name } = req.query;
-    try {
-        const clients = await db.any('SELECT * FROM cliente WHERE nome ILIKE $1', [`%${name}%`]);
-        res.status(200).json(clients);
-    } catch (error) {
-        console.error('Erro ao listar clientes por nome:', error);
-        res.status(500).json({ message: 'Erro ao listar clientes por nome' });
-    }
-};
-
 exports.updateClient = async (req, res) => {
     const identifier = req.params.identifier; 
 

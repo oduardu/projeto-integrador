@@ -30,17 +30,6 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-exports.getProductByName = async (req, res) => {
-    const { name } = req.query;
-    try {
-        const products = await db.any('SELECT * FROM produto WHERE nome ILIKE $1', [`%${name}%`]);
-        res.status(200).json(products);
-    } catch (error) {
-        console.error('Erro ao listar produtos por nome:', error);
-        res.status(500).json({ message: 'Erro ao listar produtos por nome' });
-    }
-};
-
 exports.updateProduct = async (req, res) => {
     const identifier = req.params.identifier; 
 

@@ -44,12 +44,12 @@ const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ client }) => {
         </div>
         {client.cpf != null && client.cnpj == null ? (
           <div className="grid grid-cols-5 items-center gap-4">
-            <Label className='text-right'>Cpf</Label>
+            <Label className='text-right'>CNPJ</Label>
             <Input value={client.cpf.toString().replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")} className='col-span-3' disabled />
           </div>
         ) : (
           <div className="grid grid-cols-5 items-center gap-4">
-            <Label className='text-right'>Cnpj</Label>
+            <Label className='text-right'>CNPJ</Label>
             <Input value={client.cnpj.toString().replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3\\$4-$5")} className='col-span-3' disabled />
           </div>  
         )}

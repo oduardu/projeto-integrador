@@ -29,7 +29,19 @@ const formSchema = z.object({
   nameCompany: z.string().min(2).max(50).optional(),
 })
 
-export function FormCadastro() {
+type ClienteType = {
+  nome: string;
+  email: string;
+  telefone: number;
+  rua: string;
+  numero: number;
+  cidade: string;
+  estado: string;
+  cpf: string | null;
+  cnpj: string | null;
+}
+
+export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
   const EstadosBrasil = [
     { value: "AC", label: "Acre" },
     { value: "AL", label: "Alagoas" },
@@ -66,7 +78,7 @@ export function FormCadastro() {
   const formRegister = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: cliente.nome ?? null,
       email: "",
       phone: "",
       cpf: "",

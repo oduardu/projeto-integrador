@@ -8,6 +8,7 @@ import BottleStock from "./components/cards/bottles-stock";
 import CardEtapa from "./components/cards/steps";
 import Orders from "./components/cards/orders";
 import Calendar from "./components/cards/calendar";
+import { Component } from "./components/cards/chats";
 
 export default function Home() {
 
@@ -54,6 +55,7 @@ export default function Home() {
             <BottleStock wineStock={{bottle: 100}} />
             <GrapeStockCard grapeStock={{ fullStock: "1000" }} />
             <CardEtapa etapa={{ id: 1, name: "Etapa 1", descr: "Etapa 1", startDt: new Date(), endDt: new Date() }} />
+            <Component />
           </div>
         </main>
       </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro";
+import { ModalEditarCliente } from "@/components/partials/cliente/modal-editar-cliente";
 import ModalTodasInformacoes from "@/components/partials/cliente/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -40,7 +41,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { EditIcon, InfoIcon } from "lucide-react";
+import { EditIcon, InfoIcon, TrashIcon } from "lucide-react";
 import * as React from "react";
 
 export type ClientType = {
@@ -143,8 +144,11 @@ export const DataTable: React.FC = () => {
                   <EditIcon className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <ModalTodasInformacoes client={client} />
+              <ModalEditarCliente cliente={client} />
             </Dialog>
+            <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm">
+              <TrashIcon className="h-6 w-6" />
+            </Button>
           </div>
         );
       },

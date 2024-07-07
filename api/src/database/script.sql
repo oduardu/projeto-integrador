@@ -8,7 +8,7 @@ CREATE TABLE fornecedor (
 );
 
 CREATE TABLE uva (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     data_recebimento DATE NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     quantidade_estoque NUMERIC(10, 2) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE uva (
 );
 
 CREATE TABLE vinho (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     inicio_fermentacao DATE NOT NULL,
     lote VARCHAR(50) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE vinho (
 );
 
 CREATE TABLE insumo (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     quantidade_estoque NUMERIC(10, 2) NOT NULL
@@ -86,17 +86,16 @@ CREATE TABLE historico_produto (
 );
 
 CREATE TABLE cliente (
+    id SERIAL PRIMARY KEY,
     cpf VARCHAR(14) UNIQUE,
     cnpj VARCHAR(18) UNIQUE,
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(60) NOT NULL,
-    telefone INTEGER NOT NULL,
+    telefone VARCHAR(50) NOT NULL,
     rua VARCHAR(100) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     cidade VARCHAR(50) NOT NULL,
-    estado VARCHAR(2) NOT NULL,
-
-    PRIMARY KEY (cpf, cnpj)
+    estado VARCHAR(2) NOT NULL
 );
 
 CREATE TABLE usuario (
@@ -106,7 +105,7 @@ CREATE TABLE usuario (
 );
 
 CREATE TABLE pedido (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     data DATE NOT NULL,
     cliente_fisico VARCHAR(14),
     cliente_juridico VARCHAR(18),
@@ -127,7 +126,7 @@ CREATE TABLE produto_pedido (
 );
 
 CREATE TABLE etapa_producao (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,
     descricao VARCHAR(100) NOT NULL,
     data DATE NOT NULL,

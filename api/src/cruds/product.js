@@ -30,7 +30,7 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-exports.getClientByName = async (req, res) => {
+exports.getProductByName = async (req, res) => {
     const { name } = req.query;
     try {
         const products = await db.any('SELECT * FROM produto WHERE nome ILIKE $1', [`%${name}%`]);
@@ -41,7 +41,7 @@ exports.getClientByName = async (req, res) => {
     }
 };
 
-exports.updateClient = async (req, res) => {
+exports.updateProduct = async (req, res) => {
     const identifier = req.params.identifier; 
 
     try {

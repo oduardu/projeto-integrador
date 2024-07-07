@@ -121,7 +121,7 @@ CREATE TABLE produto_pedido (
     codigo_produto VARCHAR(50) NOT NULL,
     id_pedido INTEGER NOT NULL,
 
-    PRIMARY KEY (codigo_produto, idPedido),
+    PRIMARY KEY (codigo_produto, id_pedido),
     FOREIGN KEY (codigo_produto) REFERENCES produto(codigo),
     FOREIGN KEY (id_pedido) REFERENCES pedido(id)
 );

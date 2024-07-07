@@ -5,14 +5,6 @@ import { ModalEditarCliente } from "@/components/partials/cliente/modal-editar-c
 import ModalTodasInformacoes from "@/components/partials/cliente/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -26,8 +18,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   CaretSortIcon,
-  DotsHorizontalIcon,
-  PlusIcon,
+  PlusIcon
 } from "@radix-ui/react-icons";
 import {
   ColumnDef,
@@ -45,6 +36,7 @@ import { EditIcon, InfoIcon, TrashIcon } from "lucide-react";
 import * as React from "react";
 
 export type ClientType = {
+  id: string;
   nome: string;
   email: string;
   telefone: number;
@@ -81,6 +73,20 @@ export const DataTable: React.FC = () => {
   React.useEffect(() => {
     fetchClients();
   }, []);
+
+  const deleteClient = async (identifier: string) => {
+    try {
+      const response = await fetch(`http://localhost:5672/client/${identifier}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error("Erro ao deletar cliente");
+      }
+      setClients(clients.filter(client => client.id !== identifier));
+    } catch (error) {
+      console.error("Erro ao deletar cliente:", error);
+    }
+  };
 
   // Definição das colunas da tabela
   const columns: ColumnDef<ClientType>[] = [
@@ -146,7 +152,7 @@ export const DataTable: React.FC = () => {
               </DialogTrigger>
               <ModalEditarCliente cliente={client} />
             </Dialog>
-            <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm">
+            <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteClient(client.id)}>
               <TrashIcon className="h-6 w-6" />
             </Button>
           </div>

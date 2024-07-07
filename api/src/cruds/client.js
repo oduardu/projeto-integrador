@@ -79,7 +79,7 @@ exports.deleteClient = async (req, res) => {
     const identifier = req.params.identifier; 
 
     try {
-        await db.none('DELETE FROM cliente WHERE cpf = $1 OR cnpj = $1', identifier);
+        await db.none('DELETE FROM cliente WHERE id = $1;', identifier);
         res.status(200).json({ title: 'Sucesso', description: 'Cliente removido com sucesso' });
     } catch (error) {
         console.error('Erro ao remover cliente:', error);

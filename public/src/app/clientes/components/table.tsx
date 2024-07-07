@@ -1,13 +1,32 @@
-"use client"
+'use client'
 
-import * as React from "react"
+import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
-  CaretSortIcon,
-  PlusIcon,
-  DotsHorizontalIcon,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   ArrowLeftIcon,
   ArrowRightIcon,
-} from "@radix-ui/react-icons"
+  CaretSortIcon,
+  DotsHorizontalIcon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -19,122 +38,115 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-
-const data: ClientType[] = [
-  {
-    id: "m5gr84i9",
-    fullName: "Eduardo Pazzini Zancanaro",
-    email: "e.pazzini@icloud.com",
-    avatar: "https://github.com/oduardu.png",
-  },
-]
+} from "@tanstack/react-table";
+import * as React from "react";
 
 export type ClientType = {
-  id: string
-  fullName: string
-  avatar: string
-  email: string
-}
+  nome: string;
+  email: string;
+  telefone: number;
+  rua: string;
+  numero: number;
+  cidade: string;
+  estado: string;
+};
 
-export const columns: ColumnDef<ClientType>[] = [
-  {
-    accessorKey: "avatar",
-    header: "",
-    cell: ({ row }) => {
-      return (
-        <Avatar className="w-6 h-6">
-          <AvatarImage src={row.getValue('avatar')} alt={`Foto de ${row.getValue('fullName')}`} />
-          <AvatarFallback>
-          {row.getValue('fullName') ? (row.getValue<string>('fullName').match(/(\b\S)?/g) || []).join("").match(/(^\S|\S$)?/g)?.join("").toUpperCase() : 'U'}
-        </AvatarFallback>
-      </Avatar>
-      )
+export const DataTable: React.FC = () => {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+
+  const [clients, setClients] = React.useState<ClientType[]>([]);
+
+  // Função para buscar todos os clientes do banco de dados
+  const fetchClients = async () => {
+    try {
+      const response = await fetch("http://localhost:5672/client");
+      if (!response.ok) {
+        throw new Error("Erro ao buscar clientes");
+      }
+      const data = await response.json();
+      setClients(data);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchClients();
+  }, []);
+
+  // Definição das colunas da tabela
+  const columns: ColumnDef<ClientType>[] = [
+    {
+      accessorKey: "nome",
+      header: "Nome",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div className="capitalize">{row.getValue("nome")}</div>
+        </div>
+      ),
     },
-  },
-  {
-    accessorKey: "fullName",
-    header: "Nome",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <div className="capitalize">{row.getValue("fullName")}</div>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      )
+    {
+      accessorKey: "email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Email
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" >
-            <DropdownMenuLabel>Opções</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Editar Cadastro</DropdownMenuItem>
-            <DropdownMenuItem>Todas Informações</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+    {
+      accessorKey: "telefone",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Telefone
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => <div className="lowercase">{row.getValue("telefone")}</div>,
     },
-  },
-]
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const client = row.original;
 
-export function DataTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Opções</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Editar Cadastro</DropdownMenuItem>
+              <DropdownMenuItem>Todas Informações</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
 
+  // Configuração da tabela usando o React Table
   const table = useReactTable({
-    data,
+    data: clients,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -150,7 +162,7 @@ export function DataTable() {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full">
@@ -163,42 +175,37 @@ export function DataTable() {
           }
           className="max-w-sm"
         />
-        <div>
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="default" className="ml-auto shadow-sm">
               Cadastrar <PlusIcon className="ml-2 h-4 w-4" />
-          </Button>
-        </DialogTrigger>
-        <ModalCadastro />
+            </Button>
+          </DialogTrigger>
+          <ModalCadastro />
         </Dialog>
-        </div>
       </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}>
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -243,5 +250,7 @@ export function DataTable() {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default DataTable;

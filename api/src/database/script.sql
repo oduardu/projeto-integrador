@@ -9,72 +9,72 @@ CREATE TABLE fornecedor (
 
 CREATE TABLE uva (
     id INTEGER PRIMARY KEY,
-    dataRecebimento DATE NOT NULL,
+    data_recebimento DATE NOT NULL,
     tipo VARCHAR(50) NOT NULL,
-    quantidadeEstoque NUMERIC(10, 2) NOT NULL,
-    fornecedorCnpj VARCHAR(18) NOT NULL,
+    quantidade_estoque NUMERIC(10, 2) NOT NULL,
+    fornecedor_cnpj VARCHAR(18) NOT NULL,
 
-    FOREIGN KEY (fornecedorCnpj) REFERENCES fornecedor(cnpj)
+    FOREIGN KEY (fornecedor_cnpj) REFERENCES fornecedor(cnpj)
 );
 
 CREATE TABLE vinho (
     id INTEGER PRIMARY KEY,
-    inicioFermentacao DATE NOT NULL,
+    inicio_fermentacao DATE NOT NULL,
     lote VARCHAR(50) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
-    litrosEstoque NUMERIC(10, 2) NOT NULL
+    litros_estoque NUMERIC(10, 2) NOT NULL
 );
 
 CREATE TABLE insumo (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
-    quantidadeEstoque NUMERIC(10, 2) NOT NULL
+    quantidade_estoque NUMERIC(10, 2) NOT NULL
 );
 
-CREATE TABLE vinhoUva (
-    idUva INTEGER NOT NULL,
-    idVinho INTEGER NOT NULL,
+CREATE TABLE vinho_uva (
+    id_uva INTEGER NOT NULL,
+    id_vinho INTEGER NOT NULL,
 
-    FOREIGN KEY (idUva) REFERENCES uva(id),
-    FOREIGN KEY (idVinho) REFERENCES vinho(id),
-    PRIMARY KEY (idUva, idVinho)
+    FOREIGN KEY (id_uva) REFERENCES uva(id),
+    FOREIGN KEY (id_vinho) REFERENCES vinho(id),
+    PRIMARY KEY (id_uva, id_vinho)
 );
 
-CREATE TABLE vinhoInsumo (
-    idInsumo INTEGER NOT NULL,
-    idVinho INTEGER NOT NULL,
+CREATE TABLE vinho_insumo (
+    id_insumo INTEGER NOT NULL,
+    id_vinho INTEGER NOT NULL,
 
-    FOREIGN KEY (idInsumo) REFERENCES insumo(id),
-    FOREIGN KEY (idVinho) REFERENCES vinho(id),
-    PRIMARY KEY (idInsumo, idVinho)
+    FOREIGN KEY (id_insumo) REFERENCES insumo(id),
+    FOREIGN KEY (id_vinho) REFERENCES vinho(id),
+    PRIMARY KEY (id_insumo, id_vinho)
 );
 
 CREATE TABLE garrafa (
     codigo VARCHAR(50) PRIMARY KEY NOT NULL,
     capacidade VARCHAR(30) NOT NULL,
-    quantidadeEstoque INTEGER NOT NULL,
-    vinhoArmazenado INTEGER,
+    quantidade_estoque INTEGER NOT NULL,
+    vinho_armazenado INTEGER,
 
-    FOREIGN KEY (vinhoArmazenado) REFERENCES vinho(id)
+    FOREIGN KEY (vinho_armazenado) REFERENCES vinho(id)
 );
 
 CREATE TABLE produto (
     codigo VARCHAR(50) PRIMARY KEY NOT NULL,
     nome VARCHAR(60) NOT NULL,
     descricao VARCHAR(100) NOT NULL,
-    quantidadeEstoque INTEGER NOT NULL
+    quantidade_estoque INTEGER NOT NULL
 );
 
-CREATE TABLE garrafaProduto (
-    codigoGarrafa VARCHAR(50) NOT NULL,
-    codigoProduto VARCHAR(50) NOT NULL,
-    PRIMARY KEY (codigoGarrafa, codigoProduto),
-    FOREIGN KEY (codigoGarrafa) REFERENCES garrafa(codigo),
-    FOREIGN KEY (codigoProduto) REFERENCES produto(codigo)
+CREATE TABLE garrafa_produto (
+    codigo_garrafa VARCHAR(50) NOT NULL,
+    codigo_produto VARCHAR(50) NOT NULL,
+    PRIMARY KEY (codigo_garrafa, codigo_produto),
+    FOREIGN KEY (codigo_garrafa) REFERENCES garrafa(codigo),
+    FOREIGN KEY (codigo_produto) REFERENCES produto(codigo)
 );
 
-CREATE TABLE historicoProduto (
+CREATE TABLE historico_produto (
     data DATE NOT NULL,
     hora TIME NOT NULL,
     preco NUMERIC(10, 2) NOT NULL,
@@ -85,31 +85,12 @@ CREATE TABLE historicoProduto (
     FOREIGN KEY (produto) REFERENCES produto(codigo)
 );
 
-CREATE TABLE pedido (
-    id INTEGER PRIMARY KEY,
-    data DATE NOT NULL,
-    clienteFisico VARCHAR(14),
-    clienteJuridico VARCHAR(18),
-    usuarioFatura VARCHAR(60),
-
-    FOREIGN KEY (clienteFisico) REFERENCES cliente(cpf),
-    FOREIGN KEY (clienteJuridico) REFERENCES cliente(cnpj),
-    FOREIGN KEY (usuarioFatura) REFERENCES usuario(email)
-);
-
-CREATE TABLE produtoPedido (
-    codigoProduto VARCHAR(50) NOT NULL,
-    idPedido INTEGER NOT NULL,
-
-    PRIMARY KEY (codigoProduto, idPedido),
-    FOREIGN KEY (codigoProduto) REFERENCES produto(codigo),
-    FOREIGN KEY (idPedido) REFERENCES pedido(id)
-);
-
 CREATE TABLE cliente (
-    cpf VARCHAR(14),
-    cnpj VARCHAR(18),
+    cpf VARCHAR(14) UNIQUE,
+    cnpj VARCHAR(18) UNIQUE,
     nome VARCHAR(50) NOT NULL,
+    email VARCHAR(60) NOT NULL,
+    telefone INTEGER NOT NULL,
     rua VARCHAR(100) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     cidade VARCHAR(50) NOT NULL,
@@ -119,19 +100,38 @@ CREATE TABLE cliente (
 );
 
 CREATE TABLE usuario (
-    email VARCHAR(60) NOT NULL,
+    email VARCHAR(60) PRIMARY KEY NOT NULL,
     nome VARCHAR(50) NOT NULL,
-    senha VARCHAR(60) NOT NULL,
-
-    PRIMARY KEY (email)
+    senha VARCHAR(60) NOT NULL
 );
 
-CREATE TABLE etapaProducao (
+CREATE TABLE pedido (
+    id INTEGER PRIMARY KEY,
+    data DATE NOT NULL,
+    cliente_fisico VARCHAR(14),
+    cliente_juridico VARCHAR(18),
+    usuario_fatura VARCHAR(60),
+
+    FOREIGN KEY (cliente_fisico) REFERENCES cliente(cpf),
+    FOREIGN KEY (cliente_juridico) REFERENCES cliente(cnpj),
+    FOREIGN KEY (usuario_fatura) REFERENCES usuario(email)
+);
+
+CREATE TABLE produto_pedido (
+    codigo_produto VARCHAR(50) NOT NULL,
+    id_pedido INTEGER NOT NULL,
+
+    PRIMARY KEY (codigo_produto, idPedido),
+    FOREIGN KEY (codigo_produto) REFERENCES produto(codigo),
+    FOREIGN KEY (id_pedido) REFERENCES pedido(id)
+);
+
+CREATE TABLE etapa_producao (
     id INTEGER PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,
     descricao VARCHAR(100) NOT NULL,
     data DATE NOT NULL,
-    usuarioRealizou VARCHAR(60),
+    usuario_realizou VARCHAR(60),
 
-    FOREIGN KEY (usuarioRealizou) REFERENCES usuario(email)
+    FOREIGN KEY (usuario_realizou) REFERENCES usuario(email)
 );

@@ -1,6 +1,7 @@
 'use client'
 
 import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro";
+import ModalTodasInformacoes from "@/components/partials/cliente/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
@@ -39,6 +40,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { EditIcon, InfoIcon } from "lucide-react";
 import * as React from "react";
 
 export type ClientType = {
@@ -49,6 +51,8 @@ export type ClientType = {
   numero: number;
   cidade: string;
   estado: string;
+  cpf: string | null;
+  cnpj: string | null;
 };
 
 export const DataTable: React.FC = () => {
@@ -61,28 +65,16 @@ export const DataTable: React.FC = () => {
 
   // Função para buscar todos os clientes do banco de dados
   const fetchClients = async () => {
-    const cliente = {
-      nome: "Dell Angelo",
-      email: "dellangelod@gmail.com",
-      telefone: 11999999999,
-      rua: "Rua dos Bobos",
-      numero: 0,
-      cidade: "São Paulo",
-      estado: "SP"
-    };
-
-    setClients([cliente]);
-
-    // try {
-    //   const response = await fetch("http://localhost:5672/client");
-    //   if (!response.ok) {
-    //     throw new Error("Erro ao buscar clientes");
-    //   }
-    //   const data = await response.json();
-    //   setClients(data);
-    // } catch (error) {
-    //   console.error("Erro ao buscar clientes:", error);
-    // }
+    try {
+      const response = await fetch("http://localhost:5672/client");
+      if (!response.ok) {
+        throw new Error("Erro ao buscar clientes");
+      }
+      const data = await response.json();
+      setClients(data);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+    }
   };
 
   React.useEffect(() => {
@@ -132,25 +124,28 @@ export const DataTable: React.FC = () => {
     },
     {
       id: "actions",
-      enableHiding: false,
       cell: ({ row }) => {
         const client = row.original;
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <DotsHorizontalIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Opções</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Editar Cadastro</DropdownMenuItem>
-              <DropdownMenuItem>Todas Informações</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button title={"Todas informações de " + client.nome} variant="ghost" className="shadow-sm">
+                  <InfoIcon className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <ModalTodasInformacoes client={client} />
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button title={"Editar cadastro de " + client.nome} variant="ghost" className="shadow-sm">
+                  <EditIcon className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <ModalTodasInformacoes client={client} />
+            </Dialog>
+          </div>
         );
       },
     },

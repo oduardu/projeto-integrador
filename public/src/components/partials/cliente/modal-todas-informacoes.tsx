@@ -1,9 +1,8 @@
-import React, { FC } from 'react'; // Step 1: Import FC
-import { DialogHeader, DialogContent, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
-import { FormCadastro } from "./form-cadastro";
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { FC } from 'react'; // Step 1: Import FC
 
 type ClientType = {
   nome: string;
@@ -67,7 +66,7 @@ const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ client }) => {
         </div>
       </div>
       <DialogTrigger className='flex justify-end'>
-        <Button variant="outline">Close</Button>
+        <Button variant="outline">Fechar</Button>
       </DialogTrigger>
     </DialogContent>
   );

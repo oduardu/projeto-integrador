@@ -19,9 +19,6 @@ import { z } from "zod";
 
 const formSchema = z.object({
   name: z.string().min(3).max(50),
-  email: z.string().email().min(3).max(50),
-  phone: z.string(),
-  cpf: z.string().optional(),
   cnpj: z.string().optional(),
   city: z.string(),
   state: z.string(),
@@ -29,19 +26,16 @@ const formSchema = z.object({
   number: z.string(),
 });
 
-type ClienteType = {
+type SupplierType = {
+  cnpj: string;
   name: string;
-  email: string;
-  phone: string;
   street: string;
   number: string;
   city: string;
   state: string;
-  cpf: string | null;
-  cnpj: string | null;
 };
 
-export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
+export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
   const EstadosBrasil = [
     { value: "AC", label: "Acre" },
     { value: "AL", label: "Alagoas" },
@@ -72,45 +66,39 @@ export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
     { value: "TO", label: "Tocantins" },
   ];
 
-  const [identifier, changeIdentifier] = useState('cpf');
   const [selectedState, setSelectedState] = useState("SC");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      cpf: "",
-      cnpj: "",
-      street: "",
-      number: "",
-      state: "",
-      city: "",
+      name: fornecedor?.name || "",
+      cnpj: fornecedor?.cnpj || "",
+      street: fornecedor?.street || "",
+      number: fornecedor?.number || "",
+      state: fornecedor?.state || "",
+      city: fornecedor?.city || "",
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const cleanedData = {
       ...data,
-      phone: data.phone.replace(/\D/g, ''),
-      cpf: data.cpf?.replace(/\D/g, ''),
-      cnpj: data.cnpj?.replace(/\D/g, ''),
+      cnpj: data.cnpj?.replace(/\D/g, ""),
       number: parseInt(data.number, 10),
-      state: selectedState,
+      state: selectedState, // Inclui o estado selecionado nos dados a serem enviados
     };
 
     try {
-      const response = await fetch('http://localhost:5672/client', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5672/supplier", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(cleanedData),
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao cadastrar cliente');
+        throw new Error("Erro ao cadastrar fornecedor");
       }
 
       const responseData = await response.json();
@@ -140,31 +128,23 @@ export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Email</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="mail@mail.com" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
+        <Separator className="w-full px-5" />
 
         <FormField
           control={form.control}
-          name="phone"
+          name="cnpj"
           render={({ field }) => (
             <FormItem>
               <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Telefone</FormLabel>
+                <FormLabel className="text-right">CNPJ</FormLabel>
                 <FormControl className="col-span-3">
-                  <ReactInputMask mask="(99) 99999-9999" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="(00) 00000-0000">
+                  <ReactInputMask
+                    mask="99.999.999/9999-99"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholder="00.000.000/0000-00"
+                  >
                     {(inputProps: Props) => <Input {...inputProps} />}
                   </ReactInputMask>
                 </FormControl>
@@ -173,64 +153,9 @@ export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
             </FormItem>
           )}
         />
-        
-        <Separator className="w-full px-5" />
-
-        <div className="grid grid-cols-5 items-center gap-4">
-          <Label className="text-right">Identificação</Label>
-          <Select defaultValue="cpf" onValueChange={(value) => changeIdentifier(value)}>
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Selecione a identificação" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="cpf">CPF</SelectItem>
-                <SelectItem value="cnpj">CNPJ</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        {identifier === 'cpf' ? (
-          <FormField
-            control={form.control}
-            name="cpf"
-            render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CPF</FormLabel>
-                  <FormControl className="col-span-3">
-                    <ReactInputMask mask="999.999.999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="000.000.000-00">
-                      {(inputProps: Props ) => <Input {...inputProps} />}
-                    </ReactInputMask>
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
-        ) : (
-          <FormField
-            control={form.control}
-            name="cnpj"
-            render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CNPJ</FormLabel>
-                  <FormControl className="col-span-3">
-                    <ReactInputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="00.000.000/0000-00">
-                      {(inputProps: Props) => <Input {...inputProps} />}
-                    </ReactInputMask>
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
-        )}
 
         <Separator className="w-full px-5" />
-        
+
         <FormField
           control={form.control}
           name="city"
@@ -247,7 +172,7 @@ export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
           )}
         />
 
-<div className="grid grid-cols-5 items-center gap-4">
+        <div className="grid grid-cols-5 items-center gap-4">
           <Label className="text-right">Estado</Label>
           <Select
             defaultValue={selectedState}

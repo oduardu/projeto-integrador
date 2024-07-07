@@ -1,8 +1,7 @@
 'use client'
 
-import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro";
-import { ModalEditarCliente } from "@/components/partials/cliente/modal-editar-cliente";
-import ModalTodasInformacoes from "@/components/partials/cliente/modal-todas-informacoes";
+import { ModalCadastro } from "@/components/partials/fornecedor/modal-cadastro";
+import ModalTodasInformacoes from "@/components/partials/fornecedor/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -35,17 +34,13 @@ import {
 import { EditIcon, InfoIcon, TrashIcon } from "lucide-react";
 import * as React from "react";
 
-export type ClientType = {
-  id: string;
+export type SupplierType = {
+  cnpj: string;
   nome: string;
-  email: string;
-  telefone: number;
   rua: string;
   numero: number;
   cidade: string;
   estado: string;
-  cpf: string | null;
-  cnpj: string | null;
 };
 
 export const DataTable: React.FC = () => {
@@ -54,42 +49,41 @@ export const DataTable: React.FC = () => {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const [clients, setClients] = React.useState<ClientType[]>([]);
+  const [suppliers, setSuppliers] = React.useState<SupplierType[]>([]);
 
-  // Função para buscar todos os clientes do banco de dados
-  const fetchClients = async () => {
+  const fetchSuppliers = async () => {
     try {
-      const response = await fetch("http://localhost:5672/client");
+      const response = await fetch("http://localhost:5672/supplier");
       if (!response.ok) {
-        throw new Error("Erro ao buscar clientes");
+        throw new Error("Erro ao buscar fornecedores");
       }
       const data = await response.json();
-      setClients(data);
+      setSuppliers(data);
     } catch (error) {
-      console.error("Erro ao buscar clientes:", error);
+      console.error("Erro ao buscar fornecedores:", error);
     }
   };
 
   React.useEffect(() => {
-    fetchClients();
+    fetchSuppliers();
   }, []);
 
-  const deleteClient = async (identifier: string) => {
+  const deleteSupplier = async (identifier: string) => {
     try {
-      const response = await fetch(`http://localhost:5672/client/${identifier}`, {
+      const response = await fetch(`http://localhost:5672/supplier/${identifier}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
-        throw new Error("Erro ao deletar cliente");
+        throw new Error("Erro ao deletar fornecedor");
       }
-      setClients(clients.filter(client => client.id !== identifier));
+      setSuppliers(suppliers.filter(supplier => supplier.cnpj !== identifier));
     } catch (error) {
-      console.error("Erro ao deletar cliente:", error);
+      console.error("Erro ao deletar fornecedor:", error);
     }
   };
 
   // Definição das colunas da tabela
-  const columns: ColumnDef<ClientType>[] = [
+  const columns: ColumnDef<SupplierType>[] = [
     {
       accessorKey: "nome",
       header: "Nome",
@@ -100,59 +94,74 @@ export const DataTable: React.FC = () => {
       ),
     },
     {
-      accessorKey: "email",
+      accessorKey: "cnpj",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Email
+            CNPJ
             <CaretSortIcon className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+      cell: ({ row }) => <div>{row.getValue<number>("cnpj").toString().replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3\\$4-$5")}</div>,
     },
     {
-      accessorKey: "telefone",
+      accessorKey: "cidade",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Telefone
+            Cidade
             <CaretSortIcon className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue<number>("telefone").toString().replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4")}</div>,
+      cell: ({ row }) => <div>{row.getValue("cidade")}</div>,
+    },
+    {
+      accessorKey: "estado",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Estado
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => <div>{row.getValue("estado")}</div>,
     },
     {
       id: "actions",
       cell: ({ row }) => {
-        const client = row.original;
+        const supplier = row.original;
 
         return (
           <div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button title={"Todas informações de " + client.nome} variant="ghost" className="shadow-sm">
+                <Button title={"Todas informações de " + supplier.nome} variant="ghost" className="shadow-sm">
                   <InfoIcon className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <ModalTodasInformacoes client={client} />
+              <ModalTodasInformacoes supplier={supplier} />
             </Dialog>
             <Dialog>
               <DialogTrigger asChild>
-                <Button title={"Editar cadastro de " + client.nome} variant="ghost" className="shadow-sm">
+                <Button title={"Editar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm">
                   <EditIcon className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <ModalEditarCliente cliente={client} />
+              {/* <ModalEditarCliente cliente={client} /> */}
             </Dialog>
-            <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteClient(client.id)}>
+            <Button title={"Deletar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteSupplier(supplier.cnpj)}>
               <TrashIcon className="h-6 w-6" />
             </Button>
           </div>
@@ -163,7 +172,7 @@ export const DataTable: React.FC = () => {
 
   // Configuração da tabela usando o React Table
   const table = useReactTable({
-    data: clients,
+    data: suppliers,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -239,7 +248,7 @@ export const DataTable: React.FC = () => {
                   colSpan={columns.length}
                   className="h-12 text-center"
                 >
-                  Nenhum cliente encontrado...
+                  Nenhum fornecedor encontrado...
                 </TableCell>
               </TableRow>
             )}

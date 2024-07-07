@@ -4,7 +4,7 @@ exports.addSupplier = async (req, res) => {
     const { cnpj, name, street, number, city, state } = req.body;
 
     try {
-        await db.none('INSERT INTO produto (cnpj, nome, rua, numero, cidade, estado) VALUES ($1, $2, $3, $4, $5, $6)', 
+        await db.none('INSERT INTO fornecedor (cnpj, nome, rua, numero, cidade, estado) VALUES ($1, $2, $3, $4, $5, $6)', 
             [cnpj, name, street, number, city, state]);
 
         res.status(201).json({title: 'Sucesso', description: 'Fornecedor cadastrado com sucesso'});

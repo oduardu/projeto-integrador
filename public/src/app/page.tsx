@@ -55,7 +55,7 @@ export default function Home() {
               <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-zinc-800">
                 Descubra os vinhos premiados da Dell Angelo Winehouse
               </h1>
-              <p className="mx-auto max-w-[700px] text-zinc-600 md:text-xl dark:text-zinc-200">
+              <p className="mx-auto max-w-[700px] text-zinc-600 md:text-xl dark:text-zinc-600">
                 Tradição, qualidade e paixão pelo vinho em cada garrafa.
               </p>
               <div className="mt-6">

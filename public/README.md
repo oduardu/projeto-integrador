@@ -37,17 +37,17 @@ Inicie a aplicação Next utilizando o seguinte comando:
 #### 2.1 Usando npm
 
 ```sh
-npm start
+npm run dev
 ```
 #### 2.2 Usando yarn
 
 ```sh
-yarn start
+yarn run dev
 ```
 #### 2.3 Usando pnpm
 
 ```sh
-pnpm start
+pnpm run dev
 ```
 
 ### 3. Acesse a aplicação pelo navegador

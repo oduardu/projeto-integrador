@@ -4,36 +4,28 @@ exports.addClient = async (req, res) => {
     const { cpf, cnpj, name, street, number, city, state, phone, email } = req.body;
 
     if (!cpf && !cnpj) {
-        return res.status(400).json({
-            title: 'Erro:',
-            description: 'O campo CPF ou CNPJ precisa ser preenchido'
-        });
+        return res.status(400).json({ title: 'Erro:', description: 'O campo CPF ou CNPJ precisa ser preenchido'});
     }
 
     try {
         await db.none('INSERT INTO cliente (cpf, cnpj, nome, rua, numero, cidade, estado, telefone, email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', 
             [cpf, cnpj, name, street, number, city, state, phone, email]);
 
-        res.status(201).json({title: 'Sucesso', description: 'Cliente cadastrado com sucesso'
-        });
+        res.status(201).json({title: 'Sucesso', description: 'Cliente cadastrado com sucesso'});
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
-            title: 'error',
-            description: 'Erro ao cadastrar cliente'
-        });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao cadastrar cliente'});
     }
 };
 
-// READ
 exports.getAllClients = async (req, res) => {
     try {
         const clients = await db.any('SELECT * FROM cliente');
         res.status(200).json(clients);
     } catch (error) {
         console.error('Erro ao listar todos os clientes:', error);
-        res.status(500).json({ message: 'Erro ao listar todos os clientes' });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao listar todos os clientes' });
     }
 };
 
@@ -59,11 +51,10 @@ exports.updateClient = async (req, res) => {
         res.status(200).json({ title: 'Sucesso', description: 'Cliente atualizado com sucesso' });
     } catch (error) {
         console.error('Erro ao atualizar cliente:', error);
-        res.status(500).json({title: 'Sucesso', description: 'Erro ao atualizar cliente' });
+        res.status(500).json({title: 'Erro', description: 'Erro ao atualizar cliente' });
     }
 };
 
-// DELETE
 exports.deleteClient = async (req, res) => {
     const identifier = req.params.identifier; 
 
@@ -72,6 +63,6 @@ exports.deleteClient = async (req, res) => {
         res.status(200).json({ title: 'Sucesso', description: 'Cliente removido com sucesso' });
     } catch (error) {
         console.error('Erro ao remover cliente:', error);
-        res.status(500).json({ title: 'Sucesso', description: 'Erro ao remover cliente' });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao remover cliente' });
     }
 };

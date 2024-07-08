@@ -12,21 +12,17 @@ exports.addProduct = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
-            title: 'Erro',
-            description: 'Erro ao cadastrar produto'
-        });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao cadastrar produto'});
     }
 };
 
-// READ
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await db.any('SELECT * FROM produto');
         res.status(200).json(products);
     } catch (error) {
         console.error('Erro ao listar todos os produtos:', error);
-        res.status(500).json({ message: 'Erro ao listar todos os produtos' });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao listar todos os produtos' });
     }
 };
 
@@ -48,7 +44,7 @@ exports.updateProduct = async (req, res) => {
         res.status(200).json({ title: 'Sucesso', description: 'Cliente atualizado com sucesso' });
     } catch (error) {
         console.error('Erro ao atualizar cliente:', error);
-        res.status(500).json({title: 'Sucesso', description: 'Erro ao atualizar cliente' });
+        res.status(500).json({title: 'Erro', description: 'Erro ao atualizar cliente' });
     }
 };
 
@@ -60,6 +56,6 @@ exports.deleteProduct = async (req, res) => {
         res.status(200).json({ title: 'Sucesso', description: 'Produto removido com sucesso' });
     } catch (error) {
         console.error('Erro ao remover produto:', error);
-        res.status(500).json({ title: 'Sucesso', description: 'Erro ao remover produto' });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao remover produto' });
     }
 };

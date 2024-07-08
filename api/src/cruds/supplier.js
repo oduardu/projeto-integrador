@@ -11,10 +11,7 @@ exports.addSupplier = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
-            title: 'Erro',
-            description: 'Erro ao cadastrar produto'
-        });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao cadastrar produto'});
     }
 };
 
@@ -25,7 +22,7 @@ exports.getAllSuppliers = async (req, res) => {
         res.status(200).json(suppliers);
     } catch (error) {
         console.error('Erro ao listar todos os fornecedores:', error);
-        res.status(500).json({ message: 'Erro ao listar todos os fornecedores' });
+        res.status(500).json({ title: 'Erro', description: 'Erro ao listar todos os fornecedores' });
     }
 };
 

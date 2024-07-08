@@ -2,12 +2,13 @@
  
 import { ScanBarcode } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 import { ModeToggle } from './buttons/toggle-mode'
  
 export function Header() {
   const pathname = usePathname()
+  const router = useRouter()
   
   const links = [
     { href: '/dashboard', label: 'Dashboard' },
@@ -18,13 +19,13 @@ export function Header() {
     { href: '/estoque', label: 'Estoque' },
     { href: '/calculo', label: 'Calcúlos' },
   ]
-  
-  const user = {
-    name: 'Eduardo Pazzini Zancanaro',
-    photo: 'https://github.com/oduardu.png',
-    role: 'Owner'
-  }
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+
+    router.push('/');
+  };
+  
   return (
     <nav className='p-4 border-b-2 border-zinc-300 flex items-center gap-4'>
       <Link href='/dashboard' className='flex flex-col justify-center items-center flex-[1]'>
@@ -50,7 +51,7 @@ export function Header() {
           <ModeToggle />
       </div>
       <div>
-          <Link href={'/logout'}><Button size={'default'} variant={'default'}>Sair</Button></Link>
+          <Button size={'default'} variant={'default'} onClick={handleLogout}>Sair</Button>
       </div>
       
     </nav>

@@ -1,10 +1,11 @@
-import * as React from "react"
-import { Header } from "@/components/partials/header"
-import { DataTable } from "./components/table"
+import AuthGuard from "@/components/authGuard";
+import { Header } from "@/components/partials/header";
 import { Separator } from "@/components/ui/separator";
+import { DataTable } from "./components/table";
 
 export default function Cliente() {
   return (
+    <AuthGuard>
     <>
       <Header />
       <main className="flex min-h-full flex-col  justify-between p-24 gap-2">
@@ -15,5 +16,6 @@ export default function Cliente() {
         <DataTable />
       </main>
     </>
+    </AuthGuard>
   );
 }

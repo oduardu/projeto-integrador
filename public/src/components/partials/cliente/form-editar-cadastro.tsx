@@ -26,7 +26,8 @@ const formSchema = z.object({
   city: z.string(),
   state: z.string(),
   street: z.string(),
-  number: z.string(),
+  district: z.string(),
+  number: z.string().min(1).max(5)
 });
 
 type ClientType = {
@@ -38,6 +39,7 @@ type ClientType = {
   numero: string;
   cidade: string;
   estado: string;
+  bairro: string;
   cpf: string | undefined;
   cnpj: string | undefined;
 };
@@ -85,8 +87,9 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
       cpf: client.cpf,
       cnpj: client.cnpj,
       street: client.rua,
-      number: client.numero,
+      number: client.numero.toString(),
       city: client.cidade,
+      district: client.bairro,
       state: client.estado
     },
   });
@@ -95,6 +98,7 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
     const finalData = {
       ...data,
       number: parseInt(data.number, 10),
+      phone: parseInt(data.phone.replace(/\D/g, ""), 10),
       state: selectedState,
     };
 
@@ -155,7 +159,37 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
           )}
         />
 
-        <Separator className="w-full px-5" />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Email</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="email@exemplo.com" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Telefone</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="(00) 00000-0000" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
 
         {client.cpf && (
           <FormField
@@ -197,29 +231,13 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
 
         <FormField
           control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Telefone</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="(00) 00000-0000" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="street"
           render={({ field }) => (
             <FormItem>
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Rua</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Rua A, 123" {...field} />
+                  <Input placeholder="Rua A" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -235,7 +253,39 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Número</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="123" {...field} />
+                  <Input type="number" placeholder="123" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="district"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Bairro</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Bairro Exemplo" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="city"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Cidade</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Chapecó" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -267,25 +317,7 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
           </Select>
         </div>
 
-        <Separator className="w-full px-5" />
-
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Cidade</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="Chapecó" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-
-        <Separator className="w-full px-5" />
+        
 
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>

@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from "@/components/ui/separator";
 import { FC } from 'react';
 
 type ClientType = {
@@ -12,6 +13,7 @@ type ClientType = {
   numero: number;
   cidade: string;
   estado: string;
+  bairro: string;
   cpf: string;
   cnpj: string;
 };
@@ -32,7 +34,7 @@ const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ client }) => {
           <Input value={client.nome} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
-          <Label className='text-right'>Mail</Label>
+          <Label className='text-right'>Email</Label>
           <Input value={client.email} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
@@ -50,9 +52,20 @@ const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ client }) => {
             <Input value={client.cnpj.toString().replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3\\$4-$5")} className='col-span-3' readOnly />
           </div>  
         )}
+
+        <Separator className="w-full px-5" />
+
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Rua</Label>
           <Input value={client.rua} className='col-span-3' readOnly />
+        </div>
+        <div className="grid grid-cols-5 items-center gap-4">
+          <Label className='text-right'>Número</Label>
+          <Input value={client.numero} className='col-span-3' readOnly />
+        </div>
+        <div className="grid grid-cols-5 items-center gap-4">
+          <Label className='text-right'>Bairro</Label>
+          <Input value={client.bairro} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Cidade</Label>

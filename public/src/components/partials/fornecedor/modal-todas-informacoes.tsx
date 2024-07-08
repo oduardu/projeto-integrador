@@ -2,23 +2,23 @@ import { Button } from '@/components/ui/button';
 import { DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FC } from 'react'; // Step 1: Import FC
+import { Separator } from "@/components/ui/separator";
+import { FC } from 'react';
 
 type SupplierType = {
   cnpj: string;
   nome: string;
   rua: string;
   numero: number;
+  bairro: string;
   cidade: string;
   estado: string;
 };
 
-// Step 2: Define the props for your component
 type ModalTodasInformacoesProps = {
   supplier: SupplierType;
 };
 
-// Step 3: Use these props in your component
 const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ supplier }) => {
   return (
     <DialogContent className="sm:max-w-[500px]">
@@ -34,6 +34,7 @@ const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ supplier }) => 
             <Label className='text-right'>CNPJ</Label>
             <Input value={supplier.cnpj.toString().replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3\\$4-$5")} className='col-span-3' readOnly />
           </div> 
+          <Separator className="w-full px-5" />
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Rua</Label>
           <Input value={supplier.rua} className='col-span-3' readOnly />
@@ -41,6 +42,10 @@ const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ supplier }) => 
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Número</Label>
           <Input value={supplier.numero} className='col-span-3' readOnly />
+        </div>
+        <div className="grid grid-cols-5 items-center gap-4">
+          <Label className='text-right'>Bairro</Label>
+          <Input value={supplier.bairro} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Cidade</Label>

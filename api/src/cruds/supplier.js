@@ -1,11 +1,11 @@
 const { db } = require("../database/connection")
 
 exports.addSupplier = async (req, res) => {
-    const { cnpj, name, street, number, city, state } = req.body;
+    const { cnpj, name, street, district, number, city, state } = req.body;
 
     try {
         await db.none('INSERT INTO fornecedor (cnpj, nome, rua, bairro, numero, cidade, estado) VALUES ($1, $2, $3, $4, $5, $6, $7)', 
-            [cnpj, name, street, number, city, state]);
+            [cnpj, name, street, district, number, city, state]);
 
         res.status(201).json({title: 'Sucesso', description: 'Fornecedor cadastrado com sucesso'});
 
@@ -15,7 +15,6 @@ exports.addSupplier = async (req, res) => {
     }
 };
 
-// READ
 exports.getAllSuppliers = async (req, res) => {
     try {
         const suppliers = await db.any('SELECT * FROM fornecedor');

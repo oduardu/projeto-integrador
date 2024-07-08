@@ -27,7 +27,8 @@ const formSchema = z.object({
   city: z.string(),
   state: z.string(),
   street: z.string(),
-  number: z.string(),
+  district: z.string(),
+  number: z.string().min(1).max(5)
 });
 
 export function FormCadastro() {
@@ -76,6 +77,7 @@ export function FormCadastro() {
       street: "",
       number: "",
       state: "",
+      district: "",
       city: "",
     },
   });
@@ -84,6 +86,7 @@ export function FormCadastro() {
     const finalData = {
       ...data,
       number: parseInt(data.number, 10),
+      phone: parseInt(data.phone.replace(/\D/g, ""), 10),
       state: selectedState,
     };
 
@@ -178,8 +181,6 @@ export function FormCadastro() {
           )}
         />
         
-        <Separator className="w-full px-5" />
-
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className="text-right">Identificação</Label>
           <Select defaultValue="cpf" onValueChange={(value) => changeIdentifier(value)}>
@@ -237,46 +238,6 @@ export function FormCadastro() {
         
         <FormField
           control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Cidade</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="Chapecó" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-
-<div className="grid grid-cols-5 items-center gap-4">
-          <Label className="text-right">Estado</Label>
-          <Select
-            defaultValue={selectedState}
-            onValueChange={(value) => setSelectedState(value)}
-          >
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Selecione o estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {EstadosBrasil.map((estado) => (
-                  <SelectItem
-                    key={estado.value}
-                    value={estado.value}
-                  >
-                    {estado.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <FormField
-          control={form.control}
           name="street"
           render={({ field }) => (
             <FormItem>
@@ -299,13 +260,69 @@ export function FormCadastro() {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Número</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="123" {...field} />
+                  <Input type="number" placeholder="123" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="district"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Bairro</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Bairo Exemplo" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="city"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Cidade</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Chapecó" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-5 items-center gap-4">
+          <Label className="text-right">Estado</Label>
+          <Select
+            defaultValue={selectedState}
+            onValueChange={(value) => setSelectedState(value)}
+          >
+            <SelectTrigger className="col-span-3">
+              <SelectValue placeholder="Selecione o estado" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {EstadosBrasil.map((estado) => (
+                  <SelectItem
+                    key={estado.value}
+                    value={estado.value}
+                  >
+                    {estado.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
 
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>

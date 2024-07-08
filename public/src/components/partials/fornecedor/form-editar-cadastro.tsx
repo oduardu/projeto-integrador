@@ -18,13 +18,13 @@ import { useForm } from "react-hook-form";
 import ReactInputMask, { Props } from "react-input-mask";
 import { z } from "zod";
 
-// Esquema de validação para o formulário
 const formSchema = z.object({
   name: z.string().min(3).max(50),
-  cnpj: z.string().optional(),
+  cnpj: z.string(),
   city: z.string(),
   state: z.string(),
   street: z.string(),
+  district: z.string(),
   number: z.string(),
 });
 
@@ -34,6 +34,7 @@ type SupplierType = {
   rua: string;
   numero: string;
   cidade: string;
+  bairro: string;
   estado: string;
 };
 
@@ -79,12 +80,13 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
       street: supplier.rua,
       number: supplier.numero,
       state: supplier.estado,
-      city: supplier.cidade,
+      district: supplier.bairro,
+      city: supplier.cidade
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const cleanedData = {
+    const finalData = {
       ...data,
       cnpj: data.cnpj?.replace(/\D/g, ""),
       number: parseInt(data.number, 10),
@@ -97,7 +99,7 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(cleanedData),
+        body: JSON.stringify(finalData),
       });
 
       if (!response.ok) {
@@ -148,8 +150,6 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
           )}
         />
 
-        <Separator className="w-full px-5" />
-
         <FormField
           control={form.control}
           name="cnpj"
@@ -173,8 +173,56 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
       </FormItem>
     )}
   />
-
+  
         <Separator className="w-full px-5" />
+
+        <FormField
+          control={form.control}
+          name="street"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Rua</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Rua Exemplo" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="number"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Número</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="123" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="district"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Bairro</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Bairro Exemplo" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
@@ -215,38 +263,6 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
             </SelectContent>
           </Select>
         </div>
-
-        <FormField
-          control={form.control}
-          name="street"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Rua</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="Rua Exemplo" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="number"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Número</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="123" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
 
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>

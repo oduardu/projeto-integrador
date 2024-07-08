@@ -24,19 +24,11 @@ const formSchema = z.object({
   city: z.string(),
   state: z.string(),
   street: z.string(),
+  district: z.string(),
   number: z.string(),
 });
 
-type SupplierType = {
-  cnpj: string;
-  name: string;
-  street: string;
-  number: string;
-  city: string;
-  state: string;
-};
-
-export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
+export function FormCadastro() {
   const { toast } = useToast();
   const EstadosBrasil = [
     { value: "AC", label: "Acre" },
@@ -73,12 +65,13 @@ export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: fornecedor?.name || "",
-      cnpj: fornecedor?.cnpj || "",
-      street: fornecedor?.street || "",
-      number: fornecedor?.number || "",
-      state: fornecedor?.state || "",
-      city: fornecedor?.city || "",
+      name: "",
+      cnpj: "",
+      street: "",
+      number: "",
+      district: "",
+      state: "",
+      city: "",
     },
   });
 
@@ -151,8 +144,6 @@ export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
           )}
         />
 
-        <Separator className="w-full px-5" />
-
         <FormField
           control={form.control}
           name="cnpj"
@@ -178,6 +169,54 @@ export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
         />
 
         <Separator className="w-full px-5" />
+        
+        <FormField
+          control={form.control}
+          name="street"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Rua</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Rua Exemplo" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="number"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Número</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="123" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+      <FormField
+          control={form.control}
+          name="district"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Bairro</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Bairro Exemplo" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
@@ -218,38 +257,6 @@ export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
             </SelectContent>
           </Select>
         </div>
-
-        <FormField
-          control={form.control}
-          name="street"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Rua</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="Rua Exemplo" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="number"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Número</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="123" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
 
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>

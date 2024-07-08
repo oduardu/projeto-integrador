@@ -27,21 +27,13 @@ exports.getAllSuppliers = async (req, res) => {
 };
 
 exports.updateSupplier = async (req, res) => {
-    const identifier = req.params.identifier; 
+    const identifier = req.params.identifier;
+    const {name, street, number, city, state} = req.body;
 
     try {
-        const existentSupplier = await db.oneOrNone('SELECT * FROM fornecedor WHERE cnpj = $1', identifier);
 
-        const updatedSupplier = {
-            name: req.body.name || existentSupplier.nome,
-            street: req.body.street || existentSupplier.rua,
-            number: req.body.number || existentSupplier.numero,
-            city: req.body.city || existentSupplier.cidade,
-            state: req.body.state || existentSupplier.estado,
-        };
-
-        await db.none('UPDATE fornecedor SET nome = $1, rua = $2, numero = $3, cidade = $4, estado = $5, WHERE cnpj = $6',
-            [updatedSupplier.name, updatedSupplier.street, updatedSupplier.number, updatedSupplier.city, updatedSupplier.state, identifier]);
+        await db.none('UPDATE fornecedor SET nome = $1, rua = $2, numero = $3, cidade = $4, estado = $5 WHERE cnpj = $6;',
+            [name, street, number, city, state, identifier]);
 
         res.status(200).json({ title: 'Sucesso', description: 'Fornecedor atualizado com sucesso' });
     } catch (error) {

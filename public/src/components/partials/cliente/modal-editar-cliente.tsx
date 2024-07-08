@@ -1,15 +1,12 @@
-import { Button } from "@/components/ui/button"
 import {
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { FormCadastro } from "@/components/partials/cliente/form-cadastro"
+  DialogTitle
+} from "@/components/ui/dialog";
+import { FormEditarCliente } from "../cliente/form-editar-cadastro";
 
-type ClienteType = {
+type ClientType = {
   nome: string;
   email: string;
   telefone: number;
@@ -21,7 +18,7 @@ type ClienteType = {
   cnpj: string | null;
 }
 
-export function ModalEditarCliente({ cliente }: { cliente: ClienteType }) {
+export function ModalEditarCliente({ client }: { client: ClientType }) {
   return (
     <DialogContent className="sm:max-w-[500px]">
       <DialogHeader>
@@ -31,7 +28,7 @@ export function ModalEditarCliente({ cliente }: { cliente: ClienteType }) {
         </DialogDescription>
       </DialogHeader>
 
-      <FormCadastro cliente={cliente} />
+      <FormEditarCliente client={client} />
     </DialogContent>
   )
 }

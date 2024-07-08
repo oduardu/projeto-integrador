@@ -1,6 +1,7 @@
 'use client'
 
 import { ModalCadastro } from "@/components/partials/fornecedor/modal-cadastro";
+import { ModalEditarFornecedor } from "@/components/partials/fornecedor/modal-editar-fornecedor";
 import ModalTodasInformacoes from "@/components/partials/fornecedor/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -159,7 +160,7 @@ export const DataTable: React.FC = () => {
                   <EditIcon className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              {/* <ModalEditarCliente cliente={client} /> */}
+              <ModalEditarFornecedor supplier={supplier} />
             </Dialog>
             <Button title={"Deletar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteSupplier(supplier.cnpj)}>
               <TrashIcon className="h-6 w-6" />

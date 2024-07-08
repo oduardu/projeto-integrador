@@ -31,22 +31,12 @@ exports.getAllClients = async (req, res) => {
 
 exports.updateClient = async (req, res) => {
     const identifier = req.params.identifier; 
+    const {id, name, email, cnpj, cpf, phone, street, number, city, state} = req.body;
 
     try {
-        const existentClient = await db.oneOrNone('SELECT * FROM cliente WHERE cpf = $1 OR cnpj = $1', identifier);
-
-        const updatedClient = {
-            name: req.body.name || existentClient.nome,
-            email: req.body.email || existentClient.email, 
-            phone: req.body.phone || existentClient.telefone,
-            street: req.body.street || existentClient.rua,
-            number: req.body.number || existentClient.numero,
-            city: req.body.city || existentClient.cidade,
-            state: req.body.state || existentClient.estado
-        };
 
         await db.none('UPDATE cliente SET nome = $1, telefone = $2, rua = $3, numero = $4, cidade = $5, estado = $6, email = $7 WHERE cpf = $8 OR cnpj = $8',
-            [updatedClient.name, updatedClient.phone, updatedClient.street, updatedClient.number, updatedClient.city, updatedClient.state, novoCliente.email, identifier]);
+        [name, phone, street, number, city, state, email, identifier]);
 
         res.status(200).json({ title: 'Sucesso', description: 'Cliente atualizado com sucesso' });
     } catch (error) {

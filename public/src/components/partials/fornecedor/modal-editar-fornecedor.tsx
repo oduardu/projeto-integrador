@@ -1,37 +1,31 @@
-import { Button } from "@/components/ui/button"
+import { FormEditarCadastro } from "@/components/partials/fornecedor/form-editar-cadastro";
 import {
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { FormCadastro } from "@/components/partials/cliente/form-cadastro"
+  DialogTitle
+} from "@/components/ui/dialog";
 
-type ClienteType = {
+type SupplierType = {
+  cnpj: string;
   nome: string;
-  email: string;
-  telefone: number;
   rua: string;
   numero: number;
   cidade: string;
   estado: string;
-  cpf: string | null;
-  cnpj: string | null;
-}
+};
 
-export function ModalEditarCliente({ cliente }: { cliente: ClienteType }) {
+export function ModalEditarFornecedor({ supplier }: { supplier: SupplierType }) {
   return (
     <DialogContent className="sm:max-w-[500px]">
       <DialogHeader>
-        <DialogTitle>Editar Cliente</DialogTitle>
+        <DialogTitle>Editar Fornecedor</DialogTitle>
         <DialogDescription>
-          Faça o cadastro de um cliente preenchendo os campos abaixo.
+          Edite o cadastro de um fornecedor preenchendo os campos abaixo.
         </DialogDescription>
       </DialogHeader>
 
-      <FormCadastro cliente={cliente} />
+      <FormEditarCadastro supplier={supplier} />
     </DialogContent>
   )
 }

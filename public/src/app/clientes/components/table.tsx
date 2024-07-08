@@ -150,7 +150,7 @@ export const DataTable: React.FC = () => {
                   <EditIcon className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <ModalEditarCliente cliente={client} />
+              <ModalEditarCliente client={client} />
             </Dialog>
             <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteClient(client.id)}>
               <TrashIcon className="h-6 w-6" />

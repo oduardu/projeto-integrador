@@ -27,24 +27,17 @@ exports.getAllProducts = async (req, res) => {
 };
 
 exports.updateProduct = async (req, res) => {
-    const identifier = req.params.identifier; 
+    const identifier = req.params.identifier;
+    const {code, name, description, stock} = req.body;
 
     try {
-        const existentProduct = await db.oneOrNone('SELECT * FROM produto WHERE codigo = $1', identifier);
+        await db.none('UPDATE produto SET nome = $1, descricao = $2, quantidade_estoque = $3 WHERE codigo = $4;',
+            [name, description, stock, identifier]);
 
-        const newProduct = {
-            name: req.body.name || existentProduct.nome,
-            description: req.body.description || existentProduct.descricao,
-            stock: req.body.city || existentProduct.quantidade_estoque,
-        };
-
-        await db.none('UPDATE produto SET nome = $1, descricao = $2, quantidade_estoque = $3, WHERE code = $4',
-            [newProduct.name, newProduct.description, newProduct.stock, identifier]);
-
-        res.status(200).json({ title: 'Sucesso', description: 'Cliente atualizado com sucesso' });
+        res.status(200).json({ title: 'Sucesso', description: 'Produto atualizado com sucesso' });
     } catch (error) {
-        console.error('Erro ao atualizar cliente:', error);
-        res.status(500).json({title: 'Erro', description: 'Erro ao atualizar cliente' });
+        console.error('Erro ao atualizar produto:', error);
+        res.status(500).json({title: 'Erro', description: 'Erro ao atualizar produto' });
     }
 };
 

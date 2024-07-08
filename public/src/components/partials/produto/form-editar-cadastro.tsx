@@ -1,5 +1,4 @@
-"use client"
-
+// Importações necessárias
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -15,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+// Esquema de validação para o formulário
 const formSchema = z.object({
   code: z.string().min(3, { message: ''}).max(10),
   name: z.string().min(3, { message: ''}).max(50),
@@ -22,27 +22,35 @@ const formSchema = z.object({
   stock: z.string()
 })
 
-export function FormCadastro() {
+type ProductType = {
+  codigo: string;
+  nome: string;
+  descricao: string;
+  quantidade_estoque: number;
+};
+
+export function FormEditarCadastro({ product }: { product: ProductType }) {
   const { toast } = useToast();
   const formRegister = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      code: "",
-      name: "",
-      description: "",
-      stock: "0",
+      code: product.codigo, 
+      name: product.nome, 
+      description: product.descricao, 
+      stock: product.quantidade_estoque.toString(), 
     },
   })
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  // Função para lidar com o envio do formulário
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const cleanedData = {
       ...data,
-      stock: parseInt(data.stock, 10),
+      stock: parseInt(data.stock, 10)
     };
 
     try {
-      const response = await fetch("http://localhost:5672/product", {
-        method: "POST",
+      const response = await fetch(`http://localhost:5672/product/${product.codigo}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -51,23 +59,19 @@ export function FormCadastro() {
 
       const responseData = await response.json();
 
-      if (!response.ok) {
-        throw new Error(responseData.message || "Erro ao cadastrar produto");
-      }
-
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", // Use "default" variant for success
+        variant: "default", 
       });
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000); // Reload after 3 seconds for success
+      }, 3000); 
 
     } catch (error: any) {
-      console.error("Erro ao cadastrar produto:", error);
+      console.error("Erro ao editar produto:", error);
       
       toast({
         title: "Erro",
@@ -81,6 +85,7 @@ export function FormCadastro() {
   return (
     <Form {...formRegister}>
       <form className="space-y-2" onSubmit={formRegister.handleSubmit(onSubmit)}>
+        {/* Campos do formulário */}
         <FormField
           control={formRegister.control}
           name="code"
@@ -89,7 +94,7 @@ export function FormCadastro() {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Código</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Código do Produto" {...field} />
+                  <Input placeholder="Código do Produto" {...field}  disabled/>
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -144,38 +149,6 @@ export function FormCadastro() {
             </FormItem>
           )}
         />
-        
-        {/* <FormField
-          control={formRegister.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Preço (R$)</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input type="number" min={0}  placeholder="0.00" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-        <Separator className="w-full px-5" />
-        <FormField
-          control={formRegister.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Imagem</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input type="file" />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        /> */}
         
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>

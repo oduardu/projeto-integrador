@@ -15,7 +15,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import ReactInputMask, { Props } from "react-input-mask";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -30,7 +29,20 @@ const formSchema = z.object({
   number: z.string(),
 });
 
-export function FormCadastro() {
+type ClientType = {
+  id: number;
+  nome: string;
+  email: string;
+  telefone: string;
+  rua: string;
+  numero: string;
+  cidade: string;
+  estado: string;
+  cpf: string | undefined;
+  cnpj: string | undefined;
+};
+
+export function FormEditarCliente({ client }: { client: ClientType }) {
   const { toast } = useToast();
   const EstadosBrasil = [
     { value: "AC", label: "Acre" },
@@ -62,63 +74,59 @@ export function FormCadastro() {
     { value: "TO", label: "Tocantins" },
   ];
 
-  const [identifier, changeIdentifier] = useState('cpf');
-  const [selectedState, setSelectedState] = useState("AC");
+  const [selectedState, setSelectedState] = useState(client.estado);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      cpf: "",
-      cnpj: "",
-      street: "",
-      number: "",
-      state: "",
-      city: "",
+      name: client.nome,
+      email: client.email,
+      phone: client.telefone,
+      cpf: client.cpf,
+      cnpj: client.cnpj,
+      street: client.rua,
+      number: client.numero,
+      city: client.cidade,
+      state: client.estado
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const cleanedData = {
       ...data,
-      phone: data.phone.replace(/\D/g, ''),
-      cpf: data.cpf?.replace(/\D/g, ''),
-      cnpj: data.cnpj?.replace(/\D/g, ''),
-      number: parseInt(data.number, 10),
-      state: selectedState,
+      cpf: data.cpf?.replace(/\D/g, ""),
+      estado: selectedState,
     };
 
     try {
-      const response = await fetch('http://localhost:5672/client', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:5672/client/${client.id}`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(cleanedData),
       });
 
-      const responseData = await response.json();
-
       if (!response.ok) {
-        throw new Error(responseData.message || "Erro ao cadastrar cliente");
+        throw new Error("Erro ao editar cliente");
       }
+
+      const responseData = await response.json();
 
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", 
+        variant: "default",
       });
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000); 
+      }, 3000);
 
     } catch (error: any) {
-      console.error("Erro ao cadastrar produto:", error);
-      
+      console.error("Erro ao editar cliente:", error);
+
       toast({
         title: "Erro",
         description: error.message || "Ocorreu um erro inesperado.",
@@ -147,58 +155,9 @@ export function FormCadastro() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Email</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="mail@mail.com" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Telefone</FormLabel>
-                <FormControl className="col-span-3">
-                  <ReactInputMask mask="(99) 99999-9999" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="(00) 00000-0000">
-                    {(inputProps: Props) => <Input {...inputProps} />}
-                  </ReactInputMask>
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-        
         <Separator className="w-full px-5" />
 
-        <div className="grid grid-cols-5 items-center gap-4">
-          <Label className="text-right">Identificação</Label>
-          <Select defaultValue="cpf" onValueChange={(value) => changeIdentifier(value)}>
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Selecione a identificação" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="cpf">CPF</SelectItem>
-                <SelectItem value="cnpj">CNPJ</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        {identifier === 'cpf' ? (
+        {client.cpf && (
           <FormField
             control={form.control}
             name="cpf"
@@ -207,16 +166,16 @@ export function FormCadastro() {
                 <div className="grid grid-cols-5 items-center gap-4">
                   <FormLabel className="text-right">CPF</FormLabel>
                   <FormControl className="col-span-3">
-                    <ReactInputMask mask="999.999.999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="000.000.000-00">
-                      {(inputProps: Props ) => <Input {...inputProps} />}
-                    </ReactInputMask>
+                    <Input disabled placeholder="000.000.000-00" {...field} />
                   </FormControl>
                 </div>
                 <FormMessage className="text-center" />
               </FormItem>
             )}
           />
-        ) : (
+        )}
+
+        {client.cnpj && (
           <FormField
             control={form.control}
             name="cnpj"
@@ -225,9 +184,7 @@ export function FormCadastro() {
                 <div className="grid grid-cols-5 items-center gap-4">
                   <FormLabel className="text-right">CNPJ</FormLabel>
                   <FormControl className="col-span-3">
-                    <ReactInputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="00.000.000/0000-00">
-                      {(inputProps: Props) => <Input {...inputProps} />}
-                    </ReactInputMask>
+                    <Input disabled placeholder="00.000.000/0000-00" {...field} />
                   </FormControl>
                 </div>
                 <FormMessage className="text-center" />
@@ -237,16 +194,16 @@ export function FormCadastro() {
         )}
 
         <Separator className="w-full px-5" />
-        
+
         <FormField
           control={form.control}
-          name="city"
+          name="phone"
           render={({ field }) => (
             <FormItem>
               <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Cidade</FormLabel>
+                <FormLabel className="text-right">Telefone</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Chapecó" {...field} />
+                  <Input placeholder="(00) 00000-0000" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -254,7 +211,39 @@ export function FormCadastro() {
           )}
         />
 
-<div className="grid grid-cols-5 items-center gap-4">
+        <FormField
+          control={form.control}
+          name="street"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Rua</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="Rua A, 123" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="number"
+          render={({ field }) => (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">Número</FormLabel>
+                <FormControl className="col-span-3">
+                  <Input placeholder="123" {...field} />
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-5 items-center gap-4">
           <Label className="text-right">Estado</Label>
           <Select
             defaultValue={selectedState}
@@ -278,15 +267,17 @@ export function FormCadastro() {
           </Select>
         </div>
 
+        <Separator className="w-full px-5" />
+
         <FormField
           control={form.control}
-          name="street"
+          name="city"
           render={({ field }) => (
             <FormItem>
               <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Rua</FormLabel>
+                <FormLabel className="text-right">Cidade</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Rua Exemplo" {...field} />
+                  <Input placeholder="Chapecó" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -294,21 +285,7 @@ export function FormCadastro() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="number"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Número</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="123" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
+        <Separator className="w-full px-5" />
 
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>

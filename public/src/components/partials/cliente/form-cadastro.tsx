@@ -81,11 +81,8 @@ export function FormCadastro() {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const cleanedData = {
+    const finalData = {
       ...data,
-      phone: data.phone.replace(/\D/g, ''),
-      cpf: data.cpf?.replace(/\D/g, ''),
-      cnpj: data.cnpj?.replace(/\D/g, ''),
       number: parseInt(data.number, 10),
       state: selectedState,
     };
@@ -96,7 +93,7 @@ export function FormCadastro() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(cleanedData),
+        body: JSON.stringify(finalData),
       });
 
       const responseData = await response.json();
@@ -114,7 +111,7 @@ export function FormCadastro() {
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000); 
+      }, 2000); 
 
     } catch (error: any) {
       console.error("Erro ao cadastrar produto:", error);

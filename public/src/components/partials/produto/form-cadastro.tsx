@@ -16,10 +16,10 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 const formSchema = z.object({
-  code: z.string().min(3, { message: ''}).max(10),
+  code: z.string(),
   name: z.string().min(3, { message: ''}).max(50),
   description: z.string().min(3, { message: ''}).max(50),
-  stock: z.string()
+  stock: z.string().transform(value => parseInt(value, 10))
 })
 
 export function FormCadastro() {
@@ -30,23 +30,18 @@ export function FormCadastro() {
       code: "",
       name: "",
       description: "",
-      stock: "0",
+      stock: 0,
     },
   })
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const cleanedData = {
-      ...data,
-      stock: parseInt(data.stock, 10),
-    };
-
     try {
       const response = await fetch("http://localhost:5672/product", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(cleanedData),
+        body: JSON.stringify(data),
       });
 
       const responseData = await response.json();
@@ -59,12 +54,12 @@ export function FormCadastro() {
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", // Use "default" variant for success
+        variant: "default",
       });
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000); // Reload after 3 seconds for success
+      }, 2000); 
 
     } catch (error: any) {
       console.error("Erro ao cadastrar produto:", error);

@@ -31,38 +31,38 @@ const ModalTodasInformacoes: FC<ModalTodasInformacoesProps> = ({ client }) => {
       <div className="space-y-2">
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Nome</Label>
-          <Input value={client.nome} className='col-span-3' disabled />
+          <Input value={client.nome} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Mail</Label>
-          <Input value={client.email} className='col-span-3' disabled />
+          <Input value={client.email} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Telefone</Label>
-          <Input value={client.telefone.toString().replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4")} className='col-span-3' disabled />
+          <Input value={client.telefone.toString().replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4")} className='col-span-3' readOnly />
         </div>
         {client.cpf != null && client.cnpj == null ? (
           <div className="grid grid-cols-5 items-center gap-4">
             <Label className='text-right'>CNPJ</Label>
-            <Input value={client.cpf.toString().replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")} className='col-span-3' disabled />
+            <Input value={client.cpf.toString().replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")} className='col-span-3' readOnly />
           </div>
         ) : (
           <div className="grid grid-cols-5 items-center gap-4">
             <Label className='text-right'>CNPJ</Label>
-            <Input value={client.cnpj.toString().replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3\\$4-$5")} className='col-span-3' disabled />
+            <Input value={client.cnpj.toString().replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3\\$4-$5")} className='col-span-3' readOnly />
           </div>  
         )}
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Rua</Label>
-          <Input value={client.rua} className='col-span-3' disabled />
+          <Input value={client.rua} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Cidade</Label>
-          <Input value={client.cidade} className='col-span-3' disabled />
+          <Input value={client.cidade} className='col-span-3' readOnly />
         </div>
         <div className="grid grid-cols-5 items-center gap-4">
           <Label className='text-right'>Estado</Label>
-          <Input value={client.estado} className='col-span-3' disabled />
+          <Input value={client.estado} className='col-span-3' readOnly />
         </div>
       </div>
       <DialogTrigger className='flex justify-end'>

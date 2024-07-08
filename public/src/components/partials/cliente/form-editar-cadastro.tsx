@@ -92,10 +92,10 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const cleanedData = {
+    const finalData = {
       ...data,
-      cpf: data.cpf?.replace(/\D/g, ""),
-      estado: selectedState,
+      number: parseInt(data.number, 10),
+      state: selectedState,
     };
 
     try {
@@ -104,7 +104,7 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(cleanedData),
+        body: JSON.stringify(finalData),
       });
 
       if (!response.ok) {
@@ -166,7 +166,7 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
                 <div className="grid grid-cols-5 items-center gap-4">
                   <FormLabel className="text-right">CPF</FormLabel>
                   <FormControl className="col-span-3">
-                    <Input disabled placeholder="000.000.000-00" {...field} />
+                    <Input placeholder="000.000.000-00" {...field} />
                   </FormControl>
                 </div>
                 <FormMessage className="text-center" />
@@ -184,7 +184,7 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
                 <div className="grid grid-cols-5 items-center gap-4">
                   <FormLabel className="text-right">CNPJ</FormLabel>
                   <FormControl className="col-span-3">
-                    <Input disabled placeholder="00.000.000/0000-00" {...field} />
+                    <Input placeholder="00.000.000/0000-00" {...field} />
                   </FormControl>
                 </div>
                 <FormMessage className="text-center" />

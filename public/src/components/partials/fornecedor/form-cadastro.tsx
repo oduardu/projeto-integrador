@@ -118,7 +118,7 @@ export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000); 
+      }, 2000); 
 
     } catch (error: any) {
       console.error("Erro ao cadastrar fornecedor:", error);

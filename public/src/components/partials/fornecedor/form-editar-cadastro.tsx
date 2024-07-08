@@ -132,7 +132,6 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-        {/* Campos do formulário */}
         <FormField
           control={form.control}
           name="name"
@@ -151,30 +150,29 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
 
         <Separator className="w-full px-5" />
 
-       <FormField
-  control={form.control}
-  name="cnpj"
-  render={({ field }) => (
-    <FormItem>
-      <div className="grid grid-cols-5 items-center gap-4">
-        <FormLabel className="text-right">CNPJ</FormLabel>
-        <FormControl className="col-span-3">
-          <ReactInputMask
-            mask="99.999.999/9999-99"
-            value={field.value}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            placeholder="00.000.000/0000-00"
-            disabled={true}
-          >
-            {(inputProps: Props) => <Input {...inputProps} />}
-          </ReactInputMask>
-        </FormControl>
-      </div>
-      <FormMessage className="text-center" />
-    </FormItem>
-  )}
-/>
+        <FormField
+          control={form.control}
+          name="cnpj"
+          render={({ field }) => (
+      <FormItem>
+        <div className="grid grid-cols-5 items-center gap-4">
+          <FormLabel className="text-right">CNPJ</FormLabel>
+          <FormControl className="col-span-3">
+            <ReactInputMask
+              mask="99.999.999/9999-99"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              placeholder="00.000.000/0000-00"
+            >
+              {(inputProps: Props) => <Input {...inputProps} />}
+            </ReactInputMask>
+          </FormControl>
+        </div>
+        <FormMessage className="text-center" />
+      </FormItem>
+    )}
+  />
 
         <Separator className="w-full px-5" />
 

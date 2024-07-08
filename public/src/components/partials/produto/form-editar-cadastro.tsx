@@ -94,7 +94,7 @@ export function FormEditarCadastro({ product }: { product: ProductType }) {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Código</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Código do Produto" {...field}  disabled/>
+                  <Input placeholder="Código do Produto" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />

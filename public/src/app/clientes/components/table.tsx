@@ -52,14 +52,15 @@ export type ClientType = {
 export const DataTable: React.FC = () => {
   const { toast } = useToast();
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const [clients, setClients] = React.useState<ClientType[]>([]);
 
-  // Função para buscar todos os clientes do banco de dados
   const fetchClients = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:5672/client");
       if (!response.ok) {
@@ -69,6 +70,8 @@ export const DataTable: React.FC = () => {
       setClients(data);
     } catch (error) {
       console.error("Erro ao buscar clientes:", error);
+    } finally {
+      setIsLoading(false)
     }
   };
 

@@ -1,5 +1,5 @@
 CREATE TABLE fornecedor (
-    cnpj VARCHAR(18) PRIMARY KEY NOT NULL,
+    cnpj VARCHAR(18) PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     rua VARCHAR(100) NOT NULL,
     numero VARCHAR(10) NOT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE insumo (
 );
 
 CREATE TABLE vinho_uva (
-    id_uva INTEGER NOT NULL,
-    id_vinho INTEGER NOT NULL,
+    id_uva INTEGER,
+    id_vinho INTEGER,
 
     FOREIGN KEY (id_uva) REFERENCES uva(id),
     FOREIGN KEY (id_vinho) REFERENCES vinho(id),
@@ -42,8 +42,8 @@ CREATE TABLE vinho_uva (
 );
 
 CREATE TABLE vinho_insumo (
-    id_insumo INTEGER NOT NULL,
-    id_vinho INTEGER NOT NULL,
+    id_insumo INTEGER,
+    id_vinho INTEGER,
 
     FOREIGN KEY (id_insumo) REFERENCES insumo(id),
     FOREIGN KEY (id_vinho) REFERENCES vinho(id),
@@ -51,7 +51,7 @@ CREATE TABLE vinho_insumo (
 );
 
 CREATE TABLE garrafa (
-    codigo VARCHAR(50) PRIMARY KEY NOT NULL,
+    codigo VARCHAR(50) PRIMARY KEY,
     capacidade VARCHAR(30) NOT NULL,
     quantidade_estoque INTEGER NOT NULL,
     vinho_armazenado INTEGER,
@@ -60,7 +60,7 @@ CREATE TABLE garrafa (
 );
 
 CREATE TABLE produto (
-    codigo VARCHAR(50) PRIMARY KEY NOT NULL,
+    codigo VARCHAR(50) PRIMARY KEY,
     nome VARCHAR(60) NOT NULL,
     descricao VARCHAR(100) NOT NULL,
     quantidade_estoque INTEGER NOT NULL
@@ -75,8 +75,8 @@ CREATE TABLE garrafa_produto (
 );
 
 CREATE TABLE historico_produto (
-    data DATE NOT NULL,
-    hora TIME NOT NULL,
+    data DATE,
+    hora TIME,
     preco NUMERIC(10, 2) NOT NULL,
     estoque INTEGER NOT NULL,
     produto VARCHAR(50) NOT NULL,
@@ -91,15 +91,16 @@ CREATE TABLE cliente (
     cnpj VARCHAR(18) UNIQUE,
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(60) NOT NULL,
-    telefone VARCHAR(50) NOT NULL,
+    telefone INTEGER NOT NULL,
     rua VARCHAR(100) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
+    numero INTEGER NOT NULL,
     cidade VARCHAR(50) NOT NULL,
-    estado VARCHAR(2) NOT NULL
+    estado VARCHAR(2) NOT NULL,
+    CHECK ((cpf IS NOT NULL AND cnpj IS NULL) OR (cpf IS NULL AND cnpj IS NOT NULL))
 );
 
 CREATE TABLE usuario (
-    email VARCHAR(60) PRIMARY KEY NOT NULL,
+    email VARCHAR(50) PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     senha VARCHAR(60) NOT NULL
 );
@@ -107,18 +108,16 @@ CREATE TABLE usuario (
 CREATE TABLE pedido (
     id SERIAL PRIMARY KEY,
     data DATE NOT NULL,
-    cliente_fisico VARCHAR(14),
-    cliente_juridico VARCHAR(18),
-    usuario_fatura VARCHAR(60),
-
-    FOREIGN KEY (cliente_fisico) REFERENCES cliente(cpf),
-    FOREIGN KEY (cliente_juridico) REFERENCES cliente(cnpj),
+    cliente_id INTEGER NOT NULL,
+    usuario_fatura VARCHAR(60) NOT NULL,
+    
+    FOREIGN KEY (cliente_id) REFERENCES cliente(id),
     FOREIGN KEY (usuario_fatura) REFERENCES usuario(email)
 );
 
 CREATE TABLE produto_pedido (
-    codigo_produto VARCHAR(50) NOT NULL,
-    id_pedido INTEGER NOT NULL,
+    codigo_produto VARCHAR(50),
+    id_pedido INTEGER,
 
     PRIMARY KEY (codigo_produto, id_pedido),
     FOREIGN KEY (codigo_produto) REFERENCES produto(codigo),

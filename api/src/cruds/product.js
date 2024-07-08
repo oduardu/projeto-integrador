@@ -31,8 +31,8 @@ exports.updateProduct = async (req, res) => {
     const {code, name, description, stock} = req.body;
 
     try {
-        await db.none('UPDATE produto SET nome = $1, descricao = $2, quantidade_estoque = $3 WHERE codigo = $4;',
-            [name, description, stock, identifier]);
+        await db.none('UPDATE produto SET codigo = $1, nome = $2, descricao = $3, quantidade_estoque = $4 WHERE codigo = $5;',
+            [code, name, description, stock, identifier]);
 
         res.status(200).json({ title: 'Sucesso', description: 'Produto atualizado com sucesso' });
     } catch (error) {

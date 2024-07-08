@@ -34,7 +34,7 @@ exports.updateProduct = async (req, res) => {
     const identifier = req.params.identifier; 
 
     try {
-        const existentProduct = await db.oneOrNone('SELECT * FROM produto WHERE code = $1', identifier);
+        const existentProduct = await db.oneOrNone('SELECT * FROM produto WHERE codigo = $1', identifier);
 
         const newProduct = {
             name: req.body.name || existentProduct.nome,
@@ -56,7 +56,7 @@ exports.deleteProduct = async (req, res) => {
     const identifier = req.params.identifier; 
 
     try {
-        await db.none('DELETE FROM produto WHERE code = $1', identifier);
+        await db.none('DELETE FROM produto WHERE codigo = $1', identifier);
         res.status(200).json({ title: 'Sucesso', description: 'Produto removido com sucesso' });
     } catch (error) {
         console.error('Erro ao remover produto:', error);

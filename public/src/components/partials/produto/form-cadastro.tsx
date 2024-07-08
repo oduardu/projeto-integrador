@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -22,17 +23,18 @@ const formSchema = z.object({
 })
 
 export function FormCadastro() {
+  const { toast } = useToast();
   const formRegister = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       code: "",
       name: "",
       description: "",
-      stock: 0,
+      stock: "0",
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const cleanedData = {
       ...data,
       stock: parseInt(data.stock, 10),
@@ -47,14 +49,32 @@ export function FormCadastro() {
         body: JSON.stringify(cleanedData),
       });
 
-      if (!response.ok) {
-        throw new Error("Erro ao cadastrar produto");
-      }
-
       const responseData = await response.json();
 
-    } catch (error) {
-      console.error(error);
+      if (!response.ok) {
+        throw new Error(responseData.message || "Erro ao cadastrar produto");
+      }
+
+      toast({
+        title: responseData.title,
+        description: responseData.description,
+        type: "background",
+        variant: "default", // Use "default" variant for success
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000); // Reload after 3 seconds for success
+
+    } catch (error: any) {
+      console.error("Erro ao cadastrar produto:", error);
+      
+      toast({
+        title: "Erro",
+        description: error.message || "Ocorreu um erro inesperado.",
+        type: "background",
+        variant: "destructive",
+      });
     }
   };
 

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -42,6 +43,7 @@ type ClienteType = {
 };
 
 export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
+  const { toast } = useToast();
   const EstadosBrasil = [
     { value: "AC", label: "Acre" },
     { value: "AL", label: "Alagoas" },
@@ -109,15 +111,32 @@ export function FormCadastro({ cliente }: { cliente?: ClienteType }) {
         body: JSON.stringify(cleanedData),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error('Erro ao cadastrar cliente');
+        throw new Error(responseData.message || "Erro ao cadastrar cliente");
       }
 
-      const responseData = await response.json();
-      // Handle success response if needed
+      toast({
+        title: responseData.title,
+        description: responseData.description,
+        type: "background",
+        variant: "default", 
+      });
 
-    } catch (error) {
-      console.error(error);
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000); 
+
+    } catch (error: any) {
+      console.error("Erro ao cadastrar produto:", error);
+      
+      toast({
+        title: "Erro",
+        description: error.message || "Ocorreu um erro inesperado.",
+        type: "background",
+        variant: "destructive",
+      });
     }
   };
 

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,6 +37,7 @@ type SupplierType = {
 };
 
 export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
+  const { toast } = useToast();
   const EstadosBrasil = [
     { value: "AC", label: "Acre" },
     { value: "AL", label: "Alagoas" },
@@ -85,7 +87,7 @@ export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
       ...data,
       cnpj: data.cnpj?.replace(/\D/g, ""),
       number: parseInt(data.number, 10),
-      state: selectedState, // Inclui o estado selecionado nos dados a serem enviados
+      state: selectedState, 
     };
 
     try {
@@ -102,10 +104,31 @@ export function FormCadastro({ fornecedor }: { fornecedor?: SupplierType }) {
       }
 
       const responseData = await response.json();
-      // Handle success response if needed
 
-    } catch (error) {
-      console.error(error);
+      if (!response.ok) {
+        throw new Error(responseData.message || "Erro ao cadastrar fornecedor");
+      }
+
+      toast({
+        title: responseData.title,
+        description: responseData.description,
+        type: "background",
+        variant: "default", 
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000); 
+
+    } catch (error: any) {
+      console.error("Erro ao cadastrar fornecedor:", error);
+      
+      toast({
+        title: "Erro",
+        description: error.message || "Ocorreu um erro inesperado.",
+        type: "background",
+        variant: "destructive",
+      });
     }
   };
 

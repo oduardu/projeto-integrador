@@ -91,7 +91,7 @@ CREATE TABLE cliente (
     cnpj VARCHAR(18) UNIQUE,
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(60) NOT NULL,
-    telefone INTEGER NOT NULL,
+    telefone BIGINT NOT NULL,
     rua VARCHAR(100) NOT NULL,
     numero INTEGER NOT NULL,
     cidade VARCHAR(50) NOT NULL,

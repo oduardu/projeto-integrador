@@ -4,7 +4,7 @@ import AuthGuard from "@/components/authGuard";
 import { Header } from "@/components/partials/header";
 import BottleStock from "./components/cards/bottles-stock";
 import Calendar from "./components/cards/calendar";
-import { Component } from "./components/cards/chats";
+import { Component } from "./components/cards/charts";
 import GrapeStockCard from "./components/cards/grape-stock";
 import Orders from "./components/cards/orders";
 import CardEtapa from "./components/cards/steps";

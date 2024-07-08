@@ -4,7 +4,7 @@ exports.addSupplier = async (req, res) => {
     const { cnpj, name, street, number, city, state } = req.body;
 
     try {
-        await db.none('INSERT INTO fornecedor (cnpj, nome, rua, numero, cidade, estado) VALUES ($1, $2, $3, $4, $5, $6)', 
+        await db.none('INSERT INTO fornecedor (cnpj, nome, rua, bairro, numero, cidade, estado) VALUES ($1, $2, $3, $4, $5, $6, $7)', 
             [cnpj, name, street, number, city, state]);
 
         res.status(201).json({title: 'Sucesso', description: 'Fornecedor cadastrado com sucesso'});
@@ -28,12 +28,12 @@ exports.getAllSuppliers = async (req, res) => {
 
 exports.updateSupplier = async (req, res) => {
     const identifier = req.params.identifier;
-    const {cnpj, name, street, number, city, state} = req.body;
+    const {cnpj, name, street, district, number, city, state} = req.body;
 
     try {
 
-        await db.none('UPDATE fornecedor SET cnpj = $1, nome = $2, rua = $3, numero = $4, cidade = $5, estado = $6 WHERE cnpj = $7;',
-            [cnpj, name, street, number, city, state, identifier]);
+        await db.none('UPDATE fornecedor SET cnpj = $1, nome = $2, rua = $3, bairro = $4, numero = $5, cidade = $6, estado = $7 WHERE cnpj = $8;',
+            [cnpj, name, street, district, number, city, state, identifier]);
 
         res.status(200).json({ title: 'Sucesso', description: 'Fornecedor atualizado com sucesso' });
     } catch (error) {

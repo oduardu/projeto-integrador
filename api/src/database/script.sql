@@ -1,7 +1,8 @@
 CREATE TABLE fornecedor (
     cnpj VARCHAR(18) PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    rua VARCHAR(100) NOT NULL,
+    rua VARCHAR(60) NOT NULL,
+    bairro VARCHAR(50) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     cidade VARCHAR(50) NOT NULL,
     estado VARCHAR(2) NOT NULL
@@ -92,7 +93,8 @@ CREATE TABLE cliente (
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(60) NOT NULL,
     telefone BIGINT NOT NULL,
-    rua VARCHAR(100) NOT NULL,
+    rua VARCHAR(60) NOT NULL,
+    bairro VARCHAR(50) NOT NULL,
     numero INTEGER NOT NULL,
     cidade VARCHAR(50) NOT NULL,
     estado VARCHAR(2) NOT NULL,

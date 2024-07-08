@@ -92,63 +92,42 @@ export const DataTable: React.FC = () => {
     }
   };
 
-  // Definição das colunas da tabela
   const columns: ColumnDef<ProductType>[] = [
     {
       accessorKey: "codigo",
       header: "Código",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <div className="capitalize">{row.getValue("codigo")}</div>
-        </div>
-      ),
+      cell: ({ row }) => <div className="text-left">{row.getValue("codigo")}</div>,
     },
     {
       accessorKey: "nome",
       header: "Nome",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <div className="capitalize">{row.getValue("nome")}</div>
-        </div>
-      ),
+      cell: ({ row }) => <div className="text-left">{row.getValue("nome")}</div>,
     },
     {
       accessorKey: "descricao",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Descrição
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue("descricao")}</div>,
+      header: "Descrição",
+      cell: ({ row }) => <div className="text-left">{row.getValue("descricao")}</div>,
     },
     {
       accessorKey: "quantidade_estoque",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Quantidade Em Estoque
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue("quantidade_estoque")}</div>,
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          className="text-center w-full"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Quantidade Em Estoque (em litros)
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => <div className="text-center">{row.getValue("quantidade_estoque")}</div>,
     },
     {
       id: "actions",
       cell: ({ row }) => {
         const product = row.original;
-
         return (
-          <div>
+          <div className="flex justify-end space-x-2">
             <Dialog>
               <DialogTrigger asChild>
                 <Button title={"Editar cadastro de " + product.nome} variant="ghost" className="shadow-sm">
@@ -157,7 +136,7 @@ export const DataTable: React.FC = () => {
               </DialogTrigger>
               <ModalEditarProduto product={product} />
             </Dialog>
-            <Button title={"Deletar cadastro de " + product.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteProduct(product.codigo)}>
+            <Button title={"Deletar cadastro de " + product.nome} variant="ghost" className="shadow-sm" onClick={() => deleteProduct(product.codigo)}>
               <TrashIcon className="h-6 w-6" />
             </Button>
           </div>
@@ -166,7 +145,6 @@ export const DataTable: React.FC = () => {
     },
   ];
 
-  // Configuração da tabela usando o React Table
   const table = useReactTable({
     data: products,
     columns,
@@ -212,7 +190,7 @@ export const DataTable: React.FC = () => {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-left">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -229,7 +207,7 @@ export const DataTable: React.FC = () => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="text-left">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -251,25 +229,23 @@ export const DataTable: React.FC = () => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ArrowLeftIcon aria-placeholder="Voltar para página anterior" className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ArrowRightIcon aria-placeholder="Avançar para próxima página" className="w-4 h-4" />
-          </Button>
-        </div>
+      <div className="flex justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          <ArrowLeftIcon aria-placeholder="Voltar para página anterior" className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          <ArrowRightIcon aria-placeholder="Avançar para próxima página" className="w-4 h-4" />
+        </Button>
       </div>
     </div>
   );

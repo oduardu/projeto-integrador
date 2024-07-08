@@ -18,7 +18,6 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
-  CaretSortIcon,
   PlusIcon
 } from "@radix-ui/react-icons";
 import {
@@ -44,6 +43,7 @@ export type ClientType = {
   rua: string;
   numero: number;
   cidade: string;
+  bairro: string;
   estado: string;
   cpf: string | null;
   cnpj: string | null;
@@ -116,33 +116,21 @@ export const DataTable: React.FC = () => {
     },
     {
       accessorKey: "email",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Email
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+      header: "Email",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div>{row.getValue("email")}</div>
+        </div>
+      ),
     },
     {
       accessorKey: "telefone",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Telefone
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div className="lowercase">{row.getValue<number>("telefone").toString().replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4")}</div>,
+      header: "Telefone",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div>{row.getValue("telefone")}</div>
+        </div>
+      ),
     },
     {
       id: "actions",
@@ -150,7 +138,7 @@ export const DataTable: React.FC = () => {
         const client = row.original;
 
         return (
-          <div>
+          <div className="flex justify-end space-x-2">
             <Dialog>
               <DialogTrigger asChild>
                 <Button title={"Todas informações de " + client.nome} variant="ghost" className="shadow-sm">
@@ -239,7 +227,7 @@ export const DataTable: React.FC = () => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="py-2 px-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

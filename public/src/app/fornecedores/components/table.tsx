@@ -18,7 +18,6 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
-  CaretSortIcon,
   PlusIcon
 } from "@radix-ui/react-icons";
 import {
@@ -95,7 +94,6 @@ export const DataTable: React.FC = () => {
     }
   };
 
-  // Definição das colunas da tabela
   const columns: ColumnDef<SupplierType>[] = [
     {
       accessorKey: "nome",
@@ -108,48 +106,30 @@ export const DataTable: React.FC = () => {
     },
     {
       accessorKey: "cnpj",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            CNPJ
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue<string>("cnpj").replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")}</div>,
+      header: "CNPJ",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div className="capitalize">{row.getValue<string>("cnpj").replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")}</div>
+        </div>
+      ),
     },
     {
       accessorKey: "cidade",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Cidade
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue("cidade")}</div>,
+      header: "Cidade",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <div className="capitalize">{row.getValue("cidade")}</div>
+        </div>
+      ),
     },
     {
       accessorKey: "estado",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Estado
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue("estado")}</div>,
+      header: "Estado",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          {row.getValue("estado")}
+        </div>
+      ),
     },
     {
       id: "actions",
@@ -157,7 +137,7 @@ export const DataTable: React.FC = () => {
         const supplier = row.original;
 
         return (
-          <div>
+          <div className="flex justify-end">
             <Dialog>
               <DialogTrigger asChild>
                 <Button title={"Todas informações de " + supplier.nome} variant="ghost" className="shadow-sm">

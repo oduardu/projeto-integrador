@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -45,6 +46,7 @@ export type SupplierType = {
 };
 
 export const DataTable: React.FC = () => {
+  const { toast } = useToast();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -75,11 +77,21 @@ export const DataTable: React.FC = () => {
         method: 'DELETE',
       });
       if (!response.ok) {
-        throw new Error("Erro ao deletar fornecedor");
+        throw new Error("Erro ao remover fornecedor");
       }
       setSuppliers(suppliers.filter(supplier => supplier.cnpj !== identifier));
-    } catch (error) {
-      console.error("Erro ao deletar fornecedor:", error);
+      toast({
+        title: "Sucesso",
+        description: "Fornecedor removido com sucesso",
+        variant: "default",
+      });
+    } catch (error: any) {
+      console.error("Erro ao deletar produto:", error);
+      toast({
+        title: "Erro",
+        description: error.message || "Ocorreu um erro ao remover o produto",
+        variant: "destructive",
+      });
     }
   };
 

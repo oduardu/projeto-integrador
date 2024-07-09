@@ -1,15 +1,17 @@
 "use client"
 
+import AuthGuard from "@/components/authGuard";
 import { Header } from "@/components/partials/header";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import InformacoesCliente from "./components/step/informacoes-cliente";
-import { Button } from "@/components/ui/button";
 
 export default function SolicitacaoCompra() {
   const [step, setStep] = useState<number>(1)
 
   return (
+    <AuthGuard>
     <>
       <Header />
       <main className="flex min-h-full flex-col text-center justify-between p-24 gap-2">
@@ -33,5 +35,6 @@ export default function SolicitacaoCompra() {
           </div>
       </main>
     </>
+    </AuthGuard>
   )
 }

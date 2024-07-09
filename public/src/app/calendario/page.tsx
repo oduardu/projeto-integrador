@@ -1,5 +1,6 @@
 'use client'
 
+import AuthGuard from "@/components/authGuard";
 import { Header } from "@/components/partials/header";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
@@ -9,6 +10,7 @@ export default function Calendario() {
   const [date, setDate] = useState<Date | undefined>(new Date())
 
   return (
+    <AuthGuard>
     <>
       <Header />
       <main className="flex min-h-max flex-row items-center justify-between p-3 gap-2">
@@ -37,5 +39,6 @@ export default function Calendario() {
         </div>
       </main>
     </>
+    </AuthGuard>
   );
 }

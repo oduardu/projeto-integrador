@@ -1,8 +1,8 @@
 'use client'
 
-import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro";
-import { ModalEditarCliente } from "@/components/partials/cliente/modal-editar-cliente";
-import ModalTodasInformacoes from "@/components/partials/cliente/modal-todas-informacoes";
+import { ModalCadastro } from "@/components/partials/fornecedor/modal-cadastro";
+import { ModalEditarFornecedor } from "@/components/partials/fornecedor/modal-editar-fornecedor";
+import ModalTodasInformacoes from "@/components/partials/fornecedor/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -35,62 +35,53 @@ import {
 import { EditIcon, InfoIcon, TrashIcon } from "lucide-react";
 import * as React from "react";
 
-export type ClientType = {
-  id: string;
+export type SupplierType = {
+  cnpj: string;
   nome: string;
-  email: string;
-  telefone: number;
   rua: string;
   numero: number;
   cidade: string;
-  bairro: string;
   estado: string;
-  cpf: string | null;
-  cnpj: string | null;
 };
 
 export const DataTable: React.FC = () => {
   const { toast } = useToast();
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const [clients, setClients] = React.useState<ClientType[]>([]);
+  const [suppliers, setSuppliers] = React.useState<SupplierType[]>([]);
 
-  const fetchClients = async () => {
-    setIsLoading(true);
+  const fetchSuppliers = async () => {
     try {
-      const response = await fetch("http://localhost:5672/client");
+      const response = await fetch("http://localhost:5672/supplier");
       if (!response.ok) {
-        throw new Error("Erro ao buscar clientes");
+        throw new Error("Erro ao buscar fornecedores");
       }
       const data = await response.json();
-      setClients(data);
+      setSuppliers(data);
     } catch (error) {
-      console.error("Erro ao buscar clientes:", error);
-    } finally {
-      setIsLoading(false)
+      console.error("Erro ao buscar fornecedores:", error);
     }
   };
 
   React.useEffect(() => {
-    fetchClients();
+    fetchSuppliers();
   }, []);
 
-  const deleteClient = async (identifier: string) => {
+  const deleteSupplier = async (identifier: string) => {
     try {
-      const response = await fetch(`http://localhost:5672/client/${identifier}`, {
+      const response = await fetch(`http://localhost:5672/supplier/${identifier}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
-        throw new Error("Erro ao remover cliente");
+        throw new Error("Erro ao remover fornecedor");
       }
-      setClients(clients.filter(client => client.id !== identifier));
+      setSuppliers(suppliers.filter(supplier => supplier.cnpj !== identifier));
       toast({
         title: "Sucesso",
-        description: "Produto removido com sucesso",
+        description: "Fornecedor removido com sucesso",
         variant: "default",
       });
     } catch (error: any) {
@@ -103,7 +94,7 @@ export const DataTable: React.FC = () => {
     }
   };
 
-  const columns: ColumnDef<ClientType>[] = [
+  const columns: ColumnDef<SupplierType>[] = [
     {
       accessorKey: "nome",
       header: "Nome",
@@ -114,47 +105,56 @@ export const DataTable: React.FC = () => {
       ),
     },
     {
-      accessorKey: "email",
-      header: "Email",
+      accessorKey: "cnpj",
+      header: "CNPJ",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <div>{row.getValue("email")}</div>
+          <div className="capitalize">{row.getValue<string>("cnpj").replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")}</div>
         </div>
       ),
     },
     {
-      accessorKey: "telefone",
-      header: "Telefone",
+      accessorKey: "cidade",
+      header: "Cidade",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <div>{row.getValue<number>("telefone").toString().replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4")}</div>
+          <div className="capitalize">{row.getValue("cidade")}</div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "estado",
+      header: "Estado",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          {row.getValue("estado")}
         </div>
       ),
     },
     {
       id: "actions",
       cell: ({ row }) => {
-        const client = row.original;
+        const supplier = row.original;
 
         return (
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end">
             <Dialog>
               <DialogTrigger asChild>
-                <Button title={"Todas informações de " + client.nome} variant="ghost" className="shadow-sm">
+                <Button title={"Todas informações de " + supplier.nome} variant="ghost" className="shadow-sm">
                   <InfoIcon className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <ModalTodasInformacoes client={client} />
+              <ModalTodasInformacoes supplier={supplier} />
             </Dialog>
             <Dialog>
               <DialogTrigger asChild>
-                <Button title={"Editar cadastro de " + client.nome} variant="ghost" className="shadow-sm">
+                <Button title={"Editar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm">
                   <EditIcon className="h-6 w-6" />
                 </Button>
               </DialogTrigger>
-              <ModalEditarCliente client={client} />
+              <ModalEditarFornecedor supplier={supplier} />
             </Dialog>
-            <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteClient(client.id)}>
+            <Button title={"Deletar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteSupplier(supplier.cnpj)}>
               <TrashIcon className="h-6 w-6" />
             </Button>
           </div>
@@ -165,7 +165,7 @@ export const DataTable: React.FC = () => {
 
   // Configuração da tabela usando o React Table
   const table = useReactTable({
-    data: clients,
+    data: suppliers,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -226,7 +226,7 @@ export const DataTable: React.FC = () => {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-2 px-4">
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -241,7 +241,7 @@ export const DataTable: React.FC = () => {
                   colSpan={columns.length}
                   className="h-12 text-center"
                 >
-                  Nenhum cliente encontrado...
+                  Nenhum fornecedor encontrado...
                 </TableCell>
               </TableRow>
             )}

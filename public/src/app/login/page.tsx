@@ -7,7 +7,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from 'react';
+import { z, ZodError } from "zod";
 
 type ReturnJsonApi = {
   title: string;
@@ -15,36 +17,56 @@ type ReturnJsonApi = {
   token: string;
 }
 
+const formSchema = z.object({
+  email: z.string().email("Digite um email válido"),
+  password: z.string().min(1, "Insira sua senha"),
+});
+
 export default function Login() {
   const { toast } = useToast();
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:5672/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const validatedData = formSchema.parse({ email, password });
 
-    const data: ReturnJsonApi = await response.json();
+      const response = await fetch('http://localhost:5672/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(validatedData),
+      });
 
-    localStorage.setItem('token', data.token);
+      if (!response.ok) {
+        throw new Error('Credenciais incorretas');
+      }
 
-    toast({
-      title: data.title,
-      description: data.description,
-      type: "background",
-      variant: response.ok ? "default" : "destructive",
-    });
+      const data: ReturnJsonApi = await response.json();
 
-    response.ok && setTimeout(() => {
-      window.location.href = "/login";
-    }, 6000);
+      localStorage.setItem('token', data.token);
+
+      router.push("/dashboard");
+
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const fieldErrors = error.errors.map(err => err.message).join("\n");
+        setFormError(fieldErrors);
+      } else {
+        console.error(error);
+        toast({
+          title: "Erro",
+          description: "Credenciais incorretas",
+          type: "background",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   return (
@@ -57,16 +79,16 @@ export default function Login() {
           </div>
         </div>
         <div className="flex-[1] min-h-screen flex items-center justify-center dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2]">
-        <div className="backdrop-blur-[1px]">
+          <div className="backdrop-blur-[1px]">
             <Card className="w-[340px]">
               <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
-                <CardDescription>Digite seu e-mail abaixo para fazer login em sua conta.</CardDescription>
+                <CardDescription>Insira suas credenciais abaixo para fazer login em sua conta.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form className="flex flex-col gap-4" onSubmit={handleLogin}>
                   <div className="grid items-center content-center gap-4">
-                    <Label htmlFor="email" className="text-zinc-200">Mail</Label>
+                    <Label htmlFor="email" className="text-zinc-200">Email</Label>
                     <Input
                       id="email"
                       type="email"
@@ -87,6 +109,9 @@ export default function Login() {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+                  {formError && (
+                    <div className="text-red-500 text-sm mt-1">{formError}</div>
+                  )}
                   <div className="flex row items-stretch justify-center">
                     <Button type="submit" className="mx-auto w-32">Entrar</Button>
                     <Link href="/register" className="mx-auto w-32 flex justify-center items-center gap-1 hover:text-zinc-300">Registrar-se <ChevronRight className="w-5 h-5" /></Link>

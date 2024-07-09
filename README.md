@@ -1,4 +1,4 @@
-#### Backend (Prog 2)
+#### BackEnd (Prog 2)
 > ./api
 
 #### FrontEnd (Prog 2)

@@ -1,9 +1,11 @@
+import AuthGuard from "@/components/authGuard";
 import { Header } from "@/components/partials/header";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "./components/table";
 
 export default function Estoque() {
   return (
+    <AuthGuard>
     <>
       <Header />
       <main className="flex min-h-full flex-col  justify-between p-24 gap-2">
@@ -14,5 +16,6 @@ export default function Estoque() {
         <DataTable />
       </main>
     </>
+    </AuthGuard>
   )
 }

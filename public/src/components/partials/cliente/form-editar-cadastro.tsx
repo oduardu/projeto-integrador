@@ -1,3 +1,5 @@
+"use client"
+
 import { EstadosBrasil } from "@/components/estados-brasil";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,25 +34,38 @@ const formSchema = z.object({
   number: z.string().min(1, "Digite um número.").max(5, "O número deve ter no máximo 5 caracteres.")
 });
 
-export function FormCadastro() {
+type ClientType = {
+  id: number;
+  nome: string;
+  email: string;
+  telefone: string;
+  rua: string;
+  numero: string;
+  cidade: string;
+  estado: string;
+  bairro: string;
+  cpf: string | null;
+  cnpj: string | null;
+};
+
+export function FormEditarCliente({ client }: { client: ClientType }) {
   const { toast } = useToast();
 
-  const [identifier, changeIdentifier] = useState('cpf');
-  const [selectedState, setSelectedState] = useState("AC");
+  const [selectedState, setSelectedState] = useState(client.estado);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      cpf: "",
-      cnpj: "",
-      street: "",
-      number: "",
-      state: "",
-      district: "",
-      city: "",
+      name: client.nome,
+      email: client.email,
+      phone: client.telefone,
+      cpf: client.cpf || "", 
+      cnpj: client.cnpj || "", 
+      street: client.rua,
+      number: client.numero.toString(),
+      city: client.cidade,
+      district: client.bairro,
+      state: client.estado
     },
   });
 
@@ -62,35 +77,57 @@ export function FormCadastro() {
       state: selectedState,
     };
 
+    const hasChanged =
+      finalData.name !== client.nome ||
+      finalData.email !== client.email ||
+      finalData.phone.toString() !== client.telefone.toString() ||
+      finalData.cpf !== (client.cpf || "") ||
+      finalData.cnpj !== (client.cnpj || "") ||
+      finalData.street !== client.rua ||
+      finalData.number.toString() !== client.numero.toString() ||
+      finalData.city !== client.cidade ||
+      finalData.district !== client.bairro ||
+      finalData.state !== client.estado;
+  
+      if (!hasChanged) {
+        toast({
+          title: "Nenhuma alteração detectada",
+          description: "Nenhum dado foi alterado.",
+          type: "background",
+          variant: "default",
+        });
+        return;
+      }
+
     try {
-      const response = await fetch('http://localhost:5672/client', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:5672/client/${client.id}`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(finalData),
       });
 
-      const responseData = await response.json();
-
       if (!response.ok) {
-        throw new Error(responseData.message || "Erro ao cadastrar cliente");
+        throw new Error("Erro ao editar cliente");
       }
+
+      const responseData = await response.json();
 
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", 
+        variant: "default",
       });
 
       setTimeout(() => {
         window.location.reload();
-      }, 2000); 
+      }, 2000);
 
     } catch (error: any) {
-      console.error("Erro ao cadastrar produto:", error);
-      
+      console.error("Erro ao editar cliente:", error);
+
       toast({
         title: "Erro",
         description: error.message || "Ocorreu um erro inesperado.",
@@ -127,7 +164,7 @@ export function FormCadastro() {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Email</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="mail@mail.com" {...field} />
+                  <Input placeholder="email@exemplo.com" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -152,62 +189,49 @@ export function FormCadastro() {
             </FormItem>
           )}
         />
-        
-        <div className="grid grid-cols-5 items-center gap-4">
-          <Label className="text-right">Identificação</Label>
-          <Select defaultValue="cpf" onValueChange={(value) => changeIdentifier(value)}>
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Selecione a identificação" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="cpf">CPF</SelectItem>
-                <SelectItem value="cnpj">CNPJ</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        {identifier === 'cpf' ? (
+
+        {client.cpf && (
           <FormField
             control={form.control}
             name="cpf"
             render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CPF</FormLabel>
-                  <FormControl className="col-span-3">
-                    <ReactInputMask mask="999.999.999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="000.000.000-00">
-                      {(inputProps: Props ) => <Input {...inputProps} />}
-                    </ReactInputMask>
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
-        ) : (
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">CPF</FormLabel>
+                <FormControl className="col-span-3">
+                  <ReactInputMask mask="999.999.999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="000.000.000-00">
+                    {(inputProps: Props ) => <Input {...inputProps} />}
+                  </ReactInputMask>
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
+        )}
+
+        {client.cnpj && (
           <FormField
             control={form.control}
             name="cnpj"
             render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CNPJ</FormLabel>
-                  <FormControl className="col-span-3">
-                    <ReactInputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="00.000.000/0000-00">
-                      {(inputProps: Props) => <Input {...inputProps} />}
-                    </ReactInputMask>
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">CNPJ</FormLabel>
+                <FormControl className="col-span-3">
+                  <ReactInputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="00.000.000/0000-00">
+                    {(inputProps: Props) => <Input {...inputProps} />}
+                  </ReactInputMask>
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
         )}
 
         <Separator className="w-full px-5" />
-        
+
         <FormField
           control={form.control}
           name="street"
@@ -216,7 +240,7 @@ export function FormCadastro() {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Rua</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Rua Exemplo" {...field} />
+                  <Input placeholder="Rua A" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -248,7 +272,7 @@ export function FormCadastro() {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Bairro</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Bairo Exemplo" {...field} />
+                  <Input placeholder="Bairro Exemplo" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />

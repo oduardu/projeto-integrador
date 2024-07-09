@@ -1,14 +1,15 @@
 CREATE TABLE fornecedor (
-    cnpj VARCHAR(18) PRIMARY KEY NOT NULL,
+    cnpj VARCHAR(18) PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    rua VARCHAR(100) NOT NULL,
+    rua VARCHAR(60) NOT NULL,
+    bairro VARCHAR(50) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     cidade VARCHAR(50) NOT NULL,
     estado VARCHAR(2) NOT NULL
 );
 
 CREATE TABLE uva (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     data_recebimento DATE NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     quantidade_estoque NUMERIC(10, 2) NOT NULL,
@@ -18,7 +19,7 @@ CREATE TABLE uva (
 );
 
 CREATE TABLE vinho (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     inicio_fermentacao DATE NOT NULL,
     lote VARCHAR(50) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
@@ -26,15 +27,15 @@ CREATE TABLE vinho (
 );
 
 CREATE TABLE insumo (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     quantidade_estoque NUMERIC(10, 2) NOT NULL
 );
 
 CREATE TABLE vinho_uva (
-    id_uva INTEGER NOT NULL,
-    id_vinho INTEGER NOT NULL,
+    id_uva INTEGER,
+    id_vinho INTEGER,
 
     FOREIGN KEY (id_uva) REFERENCES uva(id),
     FOREIGN KEY (id_vinho) REFERENCES vinho(id),
@@ -42,8 +43,8 @@ CREATE TABLE vinho_uva (
 );
 
 CREATE TABLE vinho_insumo (
-    id_insumo INTEGER NOT NULL,
-    id_vinho INTEGER NOT NULL,
+    id_insumo INTEGER,
+    id_vinho INTEGER,
 
     FOREIGN KEY (id_insumo) REFERENCES insumo(id),
     FOREIGN KEY (id_vinho) REFERENCES vinho(id),
@@ -51,7 +52,7 @@ CREATE TABLE vinho_insumo (
 );
 
 CREATE TABLE garrafa (
-    codigo VARCHAR(50) PRIMARY KEY NOT NULL,
+    codigo VARCHAR(50) PRIMARY KEY,
     capacidade VARCHAR(30) NOT NULL,
     quantidade_estoque INTEGER NOT NULL,
     vinho_armazenado INTEGER,
@@ -60,7 +61,7 @@ CREATE TABLE garrafa (
 );
 
 CREATE TABLE produto (
-    codigo VARCHAR(50) PRIMARY KEY NOT NULL,
+    codigo VARCHAR(50) PRIMARY KEY,
     nome VARCHAR(60) NOT NULL,
     descricao VARCHAR(100) NOT NULL,
     quantidade_estoque INTEGER NOT NULL
@@ -75,8 +76,8 @@ CREATE TABLE garrafa_produto (
 );
 
 CREATE TABLE historico_produto (
-    data DATE NOT NULL,
-    hora TIME NOT NULL,
+    data DATE,
+    hora TIME,
     preco NUMERIC(10, 2) NOT NULL,
     estoque INTEGER NOT NULL,
     produto VARCHAR(50) NOT NULL,
@@ -86,40 +87,39 @@ CREATE TABLE historico_produto (
 );
 
 CREATE TABLE cliente (
+    id SERIAL PRIMARY KEY,
     cpf VARCHAR(14) UNIQUE,
     cnpj VARCHAR(18) UNIQUE,
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(60) NOT NULL,
-    telefone INTEGER NOT NULL,
-    rua VARCHAR(100) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
+    telefone BIGINT NOT NULL,
+    rua VARCHAR(60) NOT NULL,
+    bairro VARCHAR(50) NOT NULL,
+    numero INTEGER NOT NULL,
     cidade VARCHAR(50) NOT NULL,
     estado VARCHAR(2) NOT NULL,
-
-    PRIMARY KEY (cpf, cnpj)
+    CHECK ((cpf IS NOT NULL AND cnpj IS NULL) OR (cpf IS NULL AND cnpj IS NOT NULL))
 );
 
 CREATE TABLE usuario (
-    email VARCHAR(60) PRIMARY KEY NOT NULL,
+    email VARCHAR(50) PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     senha VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE pedido (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     data DATE NOT NULL,
-    cliente_fisico VARCHAR(14),
-    cliente_juridico VARCHAR(18),
-    usuario_fatura VARCHAR(60),
-
-    FOREIGN KEY (cliente_fisico) REFERENCES cliente(cpf),
-    FOREIGN KEY (cliente_juridico) REFERENCES cliente(cnpj),
+    cliente_id INTEGER NOT NULL,
+    usuario_fatura VARCHAR(60) NOT NULL,
+    
+    FOREIGN KEY (cliente_id) REFERENCES cliente(id),
     FOREIGN KEY (usuario_fatura) REFERENCES usuario(email)
 );
 
 CREATE TABLE produto_pedido (
-    codigo_produto VARCHAR(50) NOT NULL,
-    id_pedido INTEGER NOT NULL,
+    codigo_produto VARCHAR(50),
+    id_pedido INTEGER,
 
     PRIMARY KEY (codigo_produto, id_pedido),
     FOREIGN KEY (codigo_produto) REFERENCES produto(codigo),
@@ -127,7 +127,7 @@ CREATE TABLE produto_pedido (
 );
 
 CREATE TABLE etapa_producao (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     nome VARCHAR(30) NOT NULL,
     descricao VARCHAR(100) NOT NULL,
     data DATE NOT NULL,

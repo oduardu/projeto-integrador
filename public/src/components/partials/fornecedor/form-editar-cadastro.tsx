@@ -20,37 +20,40 @@ import ReactInputMask, { Props } from "react-input-mask";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(3, "O nome deve ter no minimo 3 caracteres").max(50, "O nome deve ter no máximo 50 caracteres"),
-  email: z.string().email("Digite um email válido."),
-  phone: z.string().min(1, "Digite o telefone"),
-  cpf: z.string().optional(),
-  cnpj: z.string().optional(),
+  name: z.string().min(1, "Digite o nome.").max(50, "O nome deve ter no máximo 50 caracteres"),
+  cnpj: z.string().min(18, "O CNPJ deve ter 18 caracteres").max(18, "O CNPJ deve ter 18 caracteres"),
   city: z.string().min(1, "Digite a cidade.").max(50, "A cidade deve ter no máximo 50 caracteres."),
   state: z.string(),
-  street: z.string().min(1, "Digite a rua.").max(50, "A rua deve ter no máximo 50 caracteres."),
+  street: z.string().min(1, "Digite a rua.").max(50, "A rua deve ter no máximo 60 caracteres."),
   district: z.string().min(1, "Digite o bairro.").max(50, "O bairro deve ter no máximo 50 caracteres."),
-  number: z.string().min(1, "Digite um número.").max(5, "O número deve ter no máximo 5 caracteres.")
+  number: z.string().min(1, "Digite o número."),
 });
 
-export function FormCadastro() {
+type SupplierType = {
+  cnpj: string;
+  nome: string;
+  rua: string;
+  numero: string;
+  cidade: string;
+  bairro: string;
+  estado: string;
+};
+
+export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
   const { toast } = useToast();
 
-  const [identifier, changeIdentifier] = useState('cpf');
-  const [selectedState, setSelectedState] = useState("AC");
+  const [selectedState, setSelectedState] = useState(supplier.estado);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      cpf: "",
-      cnpj: "",
-      street: "",
-      number: "",
-      state: "",
-      district: "",
-      city: "",
+      name: supplier.nome,
+      cnpj: supplier.cnpj,
+      street: supplier.rua,
+      number: supplier.numero,
+      state: supplier.estado,
+      district: supplier.bairro,
+      city: supplier.cidade
     },
   });
 
@@ -58,39 +61,56 @@ export function FormCadastro() {
     const finalData = {
       ...data,
       number: parseInt(data.number, 10),
-      phone: parseInt(data.phone.replace(/\D/g, ""), 10),
       state: selectedState,
     };
 
+    const hasChanged =
+    finalData.name !== supplier.nome ||
+    finalData.cnpj !== supplier.cnpj ||
+    finalData.street !== supplier.rua ||
+    finalData.state !== supplier.estado ||
+    finalData.district !== supplier.bairro ||
+    finalData.number.toString() !== supplier.numero.toString();
+
+  if (!hasChanged) {
+    toast({
+      title: "Nenhuma alteração detectada",
+      description: "Nenhum dado foi alterado.",
+      type: "background",
+      variant: "default",
+    });
+    return;
+}
+
     try {
-      const response = await fetch('http://localhost:5672/client', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:5672/supplier/${supplier.cnpj}`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(finalData),
       });
 
-      const responseData = await response.json();
-
       if (!response.ok) {
-        throw new Error(responseData.message || "Erro ao cadastrar cliente");
+        throw new Error("Erro ao editar fornecedor");
       }
+
+      const responseData = await response.json();
 
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", 
+        variant: "default",
       });
 
       setTimeout(() => {
         window.location.reload();
-      }, 2000); 
+      }, 2000);
 
     } catch (error: any) {
-      console.error("Erro ao cadastrar produto:", error);
-      
+      console.error("Erro ao editar fornecedor:", error);
+
       toast({
         title: "Erro",
         description: error.message || "Ocorreu um erro inesperado.",
@@ -121,93 +141,30 @@ export function FormCadastro() {
 
         <FormField
           control={form.control}
-          name="email"
+          name="cnpj"
           render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Email</FormLabel>
-                <FormControl className="col-span-3">
-                  <Input placeholder="mail@mail.com" {...field} />
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <div className="grid grid-cols-5 items-center gap-4">
-                <FormLabel className="text-right">Telefone</FormLabel>
-                <FormControl className="col-span-3">
-                  <ReactInputMask mask="(99) 99999-9999" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="(00) 00000-0000">
-                    {(inputProps: Props) => <Input {...inputProps} />}
-                  </ReactInputMask>
-                </FormControl>
-              </div>
-              <FormMessage className="text-center" />
-            </FormItem>
-          )}
-        />
-        
+      <FormItem>
         <div className="grid grid-cols-5 items-center gap-4">
-          <Label className="text-right">Identificação</Label>
-          <Select defaultValue="cpf" onValueChange={(value) => changeIdentifier(value)}>
-            <SelectTrigger className="col-span-3">
-              <SelectValue placeholder="Selecione a identificação" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="cpf">CPF</SelectItem>
-                <SelectItem value="cnpj">CNPJ</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <FormLabel className="text-right">CNPJ</FormLabel>
+          <FormControl className="col-span-3">
+            <ReactInputMask
+              mask="99.999.999/9999-99"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              placeholder="00.000.000/0000-00"
+            >
+              {(inputProps: Props) => <Input {...inputProps} />}
+            </ReactInputMask>
+          </FormControl>
         </div>
-        
-        {identifier === 'cpf' ? (
-          <FormField
-            control={form.control}
-            name="cpf"
-            render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CPF</FormLabel>
-                  <FormControl className="col-span-3">
-                    <ReactInputMask mask="999.999.999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="000.000.000-00">
-                      {(inputProps: Props ) => <Input {...inputProps} />}
-                    </ReactInputMask>
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
-        ) : (
-          <FormField
-            control={form.control}
-            name="cnpj"
-            render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CNPJ</FormLabel>
-                  <FormControl className="col-span-3">
-                    <ReactInputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="00.000.000/0000-00">
-                      {(inputProps: Props) => <Input {...inputProps} />}
-                    </ReactInputMask>
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
-        )}
-
+        <FormMessage className="text-center" />
+      </FormItem>
+    )}
+  />
+  
         <Separator className="w-full px-5" />
-        
+
         <FormField
           control={form.control}
           name="street"
@@ -232,7 +189,7 @@ export function FormCadastro() {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Número</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input type="number" placeholder="123" {...field} />
+                  <Input placeholder="123" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -248,7 +205,7 @@ export function FormCadastro() {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Bairro</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="Bairo Exemplo" {...field} />
+                  <Input placeholder="Bairro Exemplo" {...field} />
                 </FormControl>
               </div>
               <FormMessage className="text-center" />

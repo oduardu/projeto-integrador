@@ -3,7 +3,7 @@
 import { ModalCadastro } from "@/components/partials/produto/modal-cadastro";
 import { ModalEditarProduto } from "@/components/partials/produto/modal-editar-produto";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -158,9 +158,25 @@ export const DataTable: React.FC = () => {
               </DialogTrigger>
               <ModalEditarProduto product={product} />
             </Dialog>
-            <Button title={"Deletar cadastro de " + product.nome} variant="ghost" className="shadow-sm" onClick={() => deleteProduct(product.codigo)}>
-              <TrashIcon className="h-6 w-6" />
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button title={"Deletar cadastro de " + product.nome} variant="ghost" className="shadow-sm">
+                  <TrashIcon className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[325px]">
+                <DialogHeader>
+                  <DialogTitle>Deletar produto</DialogTitle>
+                  <DialogDescription>
+                    Deseja realmente deletar o produto <strong>{product.nome}</strong>?
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogClose className="flex flex-row justify-between">
+                  <Button variant="default">Cancelar</Button>
+                  <Button onClick={() => deleteProduct(product.codigo)} variant="destructive">Deletar</Button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },

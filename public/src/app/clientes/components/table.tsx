@@ -4,7 +4,7 @@ import { ModalCadastro } from "@/components/partials/cliente/modal-cadastro";
 import { ModalEditarCliente } from "@/components/partials/cliente/modal-editar-cliente";
 import ModalTodasInformacoes from "@/components/partials/cliente/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -171,16 +171,31 @@ export const DataTable: React.FC = () => {
               </DialogTrigger>
               <ModalEditarCliente client={client} />
             </Dialog>
-            <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteClient(client.id)}>
-              <TrashIcon className="h-6 w-6" />
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button title={"Deletar cadastro de " + client.nome} variant="ghost" className="shadow-sm">
+                  <TrashIcon className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[325px]">
+                <DialogHeader>
+                  <DialogTitle>Deletar cliente</DialogTitle>
+                  <DialogDescription>
+                    Deseja realmente deletar o cliente <strong>{client.nome}</strong>?
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogClose className="flex flex-row justify-between">
+                  <Button variant="default">Cancelar</Button>
+                  <Button onClick={() => deleteClient(client.id)} variant="destructive">Deletar</Button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },
     },
   ];
 
-  // Configuração da tabela usando o React Table
   const table = useReactTable({
     data: clients,
     columns,

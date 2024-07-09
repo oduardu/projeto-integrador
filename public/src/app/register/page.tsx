@@ -20,11 +20,8 @@ type ReturnJsonApi = {
 const formSchema = z.object({
   name: z.string().min(1, "Insira o nome."),
   email: z.string().email("Digite um email válido."),
-  type: z.string(),
   password: z.string().min(1, "Insira uma senha.")
 });
-
-type UserType = "Administrador" | "Funcionario";
 
 export default function Register() {
   const router = useRouter();
@@ -32,14 +29,13 @@ export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [type, setType] = useState<UserType>("Administrador");
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      const validatedData = formSchema.parse({ name, email, password, type });
+      const validatedData = formSchema.parse({ name, email, password });
 
       const response = await fetch("http://localhost:5672/auth/register", {
         method: "POST",
@@ -80,10 +76,6 @@ export default function Register() {
     }
   };
 
-  const handleChangeType = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(event.target.value as UserType);
-  };
-
   return (
     <div className="h-screen">
       <div className="w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center">
@@ -109,21 +101,7 @@ export default function Register() {
                 </div>
                 <div className="grid items-center content-center gap-1.5">
                   <Label htmlFor="password" className="text-zinc-200">Senha</Label>
-                  <Input id="password" type="password" placeholder="" alt="Digite sua senha" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <Label className="text-right">Tipo</Label>
-                  <Select value={type} onChange={handleChangeType}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Selecione o tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="Administrador">Administrador</SelectItem>
-                        <SelectItem value="Funcionario">Funcionário</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <Input id="password" type="password" placeholder="******" alt="Digite sua senha" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 {formError && (
                   <div className="text-red-500 text-sm mt-1">{formError}</div>

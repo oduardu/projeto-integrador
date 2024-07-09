@@ -10,6 +10,7 @@ const authenticateToken = require('../auth/middleware')
 router.post('/auth/register', auth.register)
 router.post('/auth/login', auth.login)
 router.post('/auth/logout', authenticateToken, auth.logout)
+router.post('/auth/delete', authenticateToken, auth.delete)
 
 router.get('/client/', authenticateToken, client.getAllClients)
 router.post('/client', authenticateToken, client.addClient)

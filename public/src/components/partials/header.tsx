@@ -7,6 +7,7 @@ import { MenuIcon, ScanBarcode } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ModeToggle } from './buttons/toggle-mode'
+import MyAccount from './user/my-account'
  
 export function Header() {
   const pathname = usePathname()
@@ -104,6 +105,9 @@ export function Header() {
       </div>
       <div>
           <ModeToggle />
+      </div>
+      <div>
+        <MyAccount />
       </div>
       <div>
         <Button size={'default'} variant={'default'} className='ml-auto' onClick={handleLogout}>Sair</Button>

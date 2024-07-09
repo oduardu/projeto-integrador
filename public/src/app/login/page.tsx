@@ -99,7 +99,7 @@ export default function Login() {
                     />
                   </div>
                   <div className="grid items-center gap-4">
-                    <Label htmlFor="password" className="text-zinc-200">Password</Label>
+                    <Label htmlFor="password" className="text-zinc-200">Senha</Label>
                     <Input
                       id="password"
                       type="password"

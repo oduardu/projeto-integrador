@@ -104,6 +104,7 @@ CREATE TABLE cliente (
 CREATE TABLE usuario (
     email VARCHAR(50) PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
+    tipo VARCHAR(13) NOT NULL,
     senha VARCHAR(60) NOT NULL
 );
 

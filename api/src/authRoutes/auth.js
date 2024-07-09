@@ -4,16 +4,16 @@ const jwt = require('jsonwebtoken')
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body
+    const { name, email, type, password } = req.body
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const result = await db.oneOrNone('SELECT nome, email, senha FROM usuario WHERE email = $1', [email])
+    const result = await db.oneOrNone('SELECT * FROM usuario WHERE email = $1', [email])
 
     if (result) {
       return res.status(400).json({ title: 'Erro', description: 'O usuário já existe' })
     }
 
-    await db.none('INSERT INTO usuario (nome, email, senha) VALUES ($1, $2, $3)', [name, email, hashedPassword])
+    await db.none('INSERT INTO usuario (nome, email, tipo, senha) VALUES ($1, $2, $3, $4)', [name, email, type, hashedPassword])
     res.status(201).json({ title: 'Sucesso', description: 'Usuário registrado com sucesso' })
   } catch (error) {
     console.error(error)
@@ -25,7 +25,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body
 
-    const user = await db.oneOrNone('SELECT email, senha FROM usuario WHERE email = $1', [email])
+    const user = await db.oneOrNone('SELECT * FROM usuario WHERE email = $1', [email])
 
     if (!user) {
       return res.status(400).json({ title: 'Erro', description: 'Credenciais incorretas' })

@@ -1,9 +1,10 @@
-'use client'
+"use client"
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -19,22 +20,26 @@ type ReturnJsonApi = {
 const formSchema = z.object({
   name: z.string().min(1, "Insira o nome."),
   email: z.string().email("Digite um email válido."),
-  password: z.string().min(1, "Insira uma senha."),
+  type: z.string(),
+  password: z.string().min(1, "Insira uma senha.")
 });
 
+type UserType = "Administrador" | "Funcionario";
+
 export default function Register() {
-  const router = useRouter()
-  const { toast } = useToast()
+  const router = useRouter();
+  const { toast } = useToast();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [type, setType] = useState<UserType>("Administrador");
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      const validatedData = formSchema.parse({ name, email, password });
+      const validatedData = formSchema.parse({ name, email, password, type });
 
       const response = await fetch("http://localhost:5672/auth/register", {
         method: "POST",
@@ -61,7 +66,7 @@ export default function Register() {
 
     } catch (error) {
       if (error instanceof ZodError) {
-        const fieldErrors = error.errors.map(err => err.message).join("\n");
+        const fieldErrors = error.errors.map((err) => err.message).join("\n");
         setFormError(fieldErrors);
       } else {
         console.error(error);
@@ -73,6 +78,10 @@ export default function Register() {
         });
       }
     }
+  };
+
+  const handleChangeType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setType(event.target.value as UserType);
   };
 
   return (
@@ -101,6 +110,20 @@ export default function Register() {
                 <div className="grid items-center content-center gap-1.5">
                   <Label htmlFor="password" className="text-zinc-200">Senha</Label>
                   <Input id="password" type="password" placeholder="" alt="Digite sua senha" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <div className="grid grid-cols-5 items-center gap-4">
+                  <Label className="text-right">Tipo</Label>
+                  <Select value={type} onChange={handleChangeType}>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="Administrador">Administrador</SelectItem>
+                        <SelectItem value="Funcionario">Funcionário</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
                 {formError && (
                   <div className="text-red-500 text-sm mt-1">{formError}</div>

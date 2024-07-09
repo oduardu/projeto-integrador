@@ -138,7 +138,7 @@ export const DataTable: React.FC = () => {
           className="text-center w-full"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Quantidade Em Estoque (em litros)
+          Quantidade Em Estoque (em garrafas)
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       ),

@@ -70,7 +70,7 @@ export function Component() {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
-          <p className="label">{`${payload[0].payload.product} : ${payload[0].value} litros`}</p>
+          <p className="label">{`${payload[0].payload.product} : ${payload[0].value} garrafas`}</p>
         </div>
       );
     }

@@ -34,33 +34,36 @@ export function FormCadastro() {
     },
   })
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
+      const token = localStorage.getItem("token");
+  
       const response = await fetch("http://localhost:5672/product", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `${token}`,
         },
         body: JSON.stringify(data),
       });
-
+  
       const responseData = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(responseData.message || "Erro ao cadastrar produto");
       }
-
+  
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
         variant: "default",
       });
-
+  
       setTimeout(() => {
         window.location.reload();
-      }, 2000); 
-
+      }, 2000);
+  
     } catch (error: any) {
       console.error("Erro ao cadastrar produto:", error);
       

@@ -48,45 +48,44 @@ export function FormCadastro() {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const cleanedData = {
+    const finalData = {
       ...data,
       number: parseInt(data.number, 10),
-      state: selectedState, 
+      state: selectedState,
     };
-
+  
     try {
+      const token = localStorage.getItem("token");
+  
       const response = await fetch("http://localhost:5672/supplier", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `${token}`,
         },
-        body: JSON.stringify(cleanedData),
+        body: JSON.stringify(finalData),
       });
-
-      if (!response.ok) {
-        throw new Error("Erro ao cadastrar fornecedor");
-      }
-
+  
       const responseData = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(responseData.message || "Erro ao cadastrar fornecedor");
       }
-
+  
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", 
+        variant: "default",
       });
-
+  
       setTimeout(() => {
         window.location.reload();
-      }, 2000); 
-
+      }, 2000);
+  
     } catch (error: any) {
       console.error("Erro ao cadastrar fornecedor:", error);
-      
+  
       toast({
         title: "Erro",
         description: error.message || "Ocorreu um erro inesperado.",

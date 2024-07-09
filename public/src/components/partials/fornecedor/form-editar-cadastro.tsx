@@ -83,10 +83,13 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
 }
 
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(`http://localhost:5672/supplier/${supplier.cnpj}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `${token}`,
         },
         body: JSON.stringify(finalData),
       });

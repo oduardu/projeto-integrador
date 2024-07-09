@@ -46,44 +46,52 @@ export function FormEditarCadastro({ product }: { product: ProductType }) {
       ...data,
       stock: parseInt(data.stock, 10)
     };
-
+  
     const hasChanged =
-    finalData.code !== product.codigo ||
-    finalData.name !== product.nome ||
-    finalData.description !== product.descricao ||
-    finalData.stock.toString() !== product.quantidade_estoque.toString();
-
-  if (!hasChanged) {
-    toast({
-      title: "Nenhuma alteração detectada",
-      description: "Nenhum dado foi alterado.",
-      type: "background",
-      variant: "default",
-    });
-    return;
-}
+      finalData.code !== product.codigo ||
+      finalData.name !== product.nome ||
+      finalData.description !== product.descricao ||
+      finalData.stock.toString() !== product.quantidade_estoque.toString();
+  
+    if (!hasChanged) {
+      toast({
+        title: "Nenhuma alteração detectada",
+        description: "Nenhum dado foi alterado.",
+        type: "background",
+        variant: "default",
+      });
+      return;
+    }
+  
     try {
+      const token = localStorage.getItem("token");
+  
       const response = await fetch(`http://localhost:5672/product/${product.codigo}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `${token}`,
         },
         body: JSON.stringify(finalData),
       });
-
+  
       const responseData = await response.json();
-
+  
+      if (!response.ok) {
+        throw new Error(responseData.message || "Erro ao editar produto");
+      }
+  
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", 
+        variant: "default",
       });
-
+  
       setTimeout(() => {
         window.location.reload();
-      }, 2000); 
-
+      }, 2000);
+  
     } catch (error: any) {
       console.error("Erro ao editar produto:", error);
       

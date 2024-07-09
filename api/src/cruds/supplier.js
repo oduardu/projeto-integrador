@@ -43,7 +43,7 @@ exports.updateSupplier = async (req, res) => {
 
 exports.deleteSupplier = async (req, res) => {
     const identifier = req.params.identifier; 
-
+    
     try {
         await db.none('DELETE FROM fornecedor WHERE cnpj = $1', identifier);
         res.status(200).json({ title: 'Sucesso', description: 'Fornecedor removido com sucesso' });

@@ -24,21 +24,39 @@ export function Component() {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5672/product')
-      .then(response => response.json())
-      .then((data: ProductType[]) => {
-        const formattedData = data.map((item: ProductType) => ({
-          product: item.nome, 
-          produtos: item.quantidade_estoque
-        }));
-        setChartData(formattedData);
-        setLoading(false);
-      })
-      .catch((err: Error) => {
-        setError(err);
-        setLoading(false);
-      });
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+
+      const response = await fetch("http://localhost:5672/product", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar produtos");
+      }
+
+      const data: ProductType[] = await response.json();
+      const formattedData = data.map((item: ProductType) => ({
+        product: item.nome,
+        produtos: item.quantidade_estoque
+      }));
+      setChartData(formattedData);
+      setLoading(false);
+    } catch (error: any) {
+      setError(error);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return <p>Carregando...</p>;

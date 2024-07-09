@@ -53,10 +53,21 @@ export const DataTable: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:5672/product");
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+  
+      const response = await fetch("http://localhost:5672/product", {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+  
       if (!response.ok) {
         throw new Error("Erro ao buscar produtos");
       }
+  
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -70,12 +81,22 @@ export const DataTable: React.FC = () => {
 
   const deleteProduct = async (identifier: string) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+  
       const response = await fetch(`http://localhost:5672/product/${identifier}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+  
       if (!response.ok) {
         throw new Error("Erro ao deletar produto");
       }
+  
       setProducts(products.filter(product => product.codigo !== identifier));
       toast({
         title: "Sucesso",
@@ -91,6 +112,7 @@ export const DataTable: React.FC = () => {
       });
     }
   };
+  
 
   const columns: ColumnDef<ProductType>[] = [
     {

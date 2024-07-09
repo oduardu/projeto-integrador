@@ -37,7 +37,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ title: 'Erro', description: 'Credenciais incorretas' })
     }
 
-    const token = jwt.sign({ email: user.email }, 'your_jwt_secret', { expiresIn: '1h' })
+    const jwt_secret = process.env.JWT_SECRET
+
+    const token = jwt.sign({ email: user.email, name: user.nome, type: user.tipo }, jwt_secret, { expiresIn: '1h' })
     res.status(200).json({ title: 'Sucesso', description: 'Usuário logado com sucesso', token: token })
   } catch (error) {
     console.error(error)

@@ -63,10 +63,16 @@ export function FormCadastro() {
     };
 
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado.");
+      }
+
       const response = await fetch('http://localhost:5672/client', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `${token}`, 
         },
         body: JSON.stringify(finalData),
       });
@@ -81,16 +87,16 @@ export function FormCadastro() {
         title: responseData.title,
         description: responseData.description,
         type: "background",
-        variant: "default", 
+        variant: "default",
       });
 
       setTimeout(() => {
         window.location.reload();
-      }, 2000); 
+      }, 2000);
 
     } catch (error: any) {
-      console.error("Erro ao cadastrar produto:", error);
-      
+      console.error("Erro ao cadastrar cliente:", error);
+
       toast({
         title: "Erro",
         description: error.message || "Ocorreu um erro inesperado.",

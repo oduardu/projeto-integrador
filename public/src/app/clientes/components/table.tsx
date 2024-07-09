@@ -52,7 +52,6 @@ export type ClientType = {
 export const DataTable: React.FC = () => {
   const { toast } = useToast();
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -60,19 +59,27 @@ export const DataTable: React.FC = () => {
   const [clients, setClients] = React.useState<ClientType[]>([]);
 
   const fetchClients = async () => {
-    setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5672/client");
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+  
+      const response = await fetch("http://localhost:5672/client", {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+  
       if (!response.ok) {
         throw new Error("Erro ao buscar clientes");
       }
+  
       const data = await response.json();
       setClients(data);
     } catch (error) {
       console.error("Erro ao buscar clientes:", error);
-    } finally {
-      setIsLoading(false)
-    }
+    } 
   };
 
   React.useEffect(() => {
@@ -81,23 +88,33 @@ export const DataTable: React.FC = () => {
 
   const deleteClient = async (identifier: string) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+  
       const response = await fetch(`http://localhost:5672/client/${identifier}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+  
       if (!response.ok) {
-        throw new Error("Erro ao remover cliente");
+        throw new Error("Erro ao deletar cliente");
       }
+  
       setClients(clients.filter(client => client.id !== identifier));
       toast({
         title: "Sucesso",
-        description: "Produto removido com sucesso",
+        description: "Cliente removido com sucesso",
         variant: "default",
       });
     } catch (error: any) {
-      console.error("Erro ao deletar produto:", error);
+      console.error("Erro ao remover cliente:", error);
       toast({
         title: "Erro",
-        description: error.message || "Ocorreu um erro ao remover o produto",
+        description: error.message || "Ocorreu um erro ao remover o cliente",
         variant: "destructive",
       });
     }

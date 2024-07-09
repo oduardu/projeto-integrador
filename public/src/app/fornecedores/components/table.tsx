@@ -55,10 +55,21 @@ export const DataTable: React.FC = () => {
 
   const fetchSuppliers = async () => {
     try {
-      const response = await fetch("http://localhost:5672/supplier");
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+  
+      const response = await fetch("http://localhost:5672/supplier", {
+        headers: {
+          Authorization: `${token}`,
+        },  
+      });
+  
       if (!response.ok) {
         throw new Error("Erro ao buscar fornecedores");
       }
+  
       const data = await response.json();
       setSuppliers(data);
     } catch (error) {
@@ -72,12 +83,22 @@ export const DataTable: React.FC = () => {
 
   const deleteSupplier = async (identifier: string) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error("Token não encontrado");
+      }
+  
       const response = await fetch(`http://localhost:5672/supplier/${identifier}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+  
       if (!response.ok) {
         throw new Error("Erro ao remover fornecedor");
       }
+  
       setSuppliers(suppliers.filter(supplier => supplier.cnpj !== identifier));
       toast({
         title: "Sucesso",
@@ -85,10 +106,10 @@ export const DataTable: React.FC = () => {
         variant: "default",
       });
     } catch (error: any) {
-      console.error("Erro ao deletar produto:", error);
+      console.error("Erro ao deletar fornecedor:", error);
       toast({
         title: "Erro",
-        description: error.message || "Ocorreu um erro ao remover o produto",
+        description: error.message || "Ocorreu um erro ao remover o fornecedor",
         variant: "destructive",
       });
     }

@@ -76,7 +76,7 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
       phone: parseInt(data.phone.replace(/\D/g, ""), 10),
       state: selectedState,
     };
-
+  
     const hasChanged =
       finalData.name !== client.nome ||
       finalData.email !== client.email ||
@@ -89,45 +89,48 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
       finalData.district !== client.bairro ||
       finalData.state !== client.estado;
   
-      if (!hasChanged) {
-        toast({
-          title: "Nenhuma alteração detectada",
-          description: "Nenhum dado foi alterado.",
-          type: "background",
-          variant: "default",
-        });
-        return;
-      }
-
+    if (!hasChanged) {
+      toast({
+        title: "Nenhuma alteração detectada",
+        description: "Nenhum dado foi alterado.",
+        type: "background",
+        variant: "default",
+      });
+      return;
+    }
+  
     try {
+      const token = localStorage.getItem("token");
+  
       const response = await fetch(`http://localhost:5672/client/${client.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `${token}`,
         },
         body: JSON.stringify(finalData),
       });
-
+  
       if (!response.ok) {
         throw new Error("Erro ao editar cliente");
       }
-
+  
       const responseData = await response.json();
-
+  
       toast({
         title: responseData.title,
         description: responseData.description,
         type: "background",
         variant: "default",
       });
-
+  
       setTimeout(() => {
         window.location.reload();
       }, 2000);
-
+  
     } catch (error: any) {
       console.error("Erro ao editar cliente:", error);
-
+  
       toast({
         title: "Erro",
         description: error.message || "Ocorreu um erro inesperado.",

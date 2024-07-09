@@ -1,3 +1,5 @@
+"use client"
+
 import { EstadosBrasil } from "@/components/estados-brasil";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,19 +18,20 @@ import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import ReactInputMask, { Props } from "react-input-mask";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(3).max(50),
-  email: z.string().email().min(3).max(50),
-  phone: z.string(),
+  name: z.string().min(3, "O nome deve ter no minimo 3 caracteres").max(50, "O nome deve ter no máximo 50 caracteres"),
+  email: z.string().email("Digite um email válido."),
+  phone: z.string().min(1, "Digite o telefone"),
   cpf: z.string().optional(),
   cnpj: z.string().optional(),
-  city: z.string(),
+  city: z.string().min(1, "Digite a cidade.").max(50, "A cidade deve ter no máximo 50 caracteres."),
   state: z.string(),
-  street: z.string(),
-  district: z.string(),
-  number: z.string().min(1).max(5)
+  street: z.string().min(1, "Digite a rua.").max(50, "A rua deve ter no máximo 50 caracteres."),
+  district: z.string().min(1, "Digite o bairro.").max(50, "O bairro deve ter no máximo 50 caracteres."),
+  number: z.string().min(1, "Digite um número.").max(5, "O número deve ter no máximo 5 caracteres.")
 });
 
 type ClientType = {
@@ -41,8 +44,8 @@ type ClientType = {
   cidade: string;
   estado: string;
   bairro: string;
-  cpf: string | undefined;
-  cnpj: string | undefined;
+  cpf: string | null;
+  cnpj: string | null;
 };
 
 export function FormEditarCliente({ client }: { client: ClientType }) {
@@ -56,8 +59,8 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
       name: client.nome,
       email: client.email,
       phone: client.telefone,
-      cpf: client.cpf,
-      cnpj: client.cnpj,
+      cpf: client.cpf || "", 
+      cnpj: client.cnpj || "", 
       street: client.rua,
       number: client.numero.toString(),
       city: client.cidade,
@@ -73,6 +76,28 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
       phone: parseInt(data.phone.replace(/\D/g, ""), 10),
       state: selectedState,
     };
+
+    const hasChanged =
+      finalData.name !== client.nome ||
+      finalData.email !== client.email ||
+      finalData.phone.toString() !== client.telefone.toString() ||
+      finalData.cpf !== (client.cpf || "") ||
+      finalData.cnpj !== (client.cnpj || "") ||
+      finalData.street !== client.rua ||
+      finalData.number.toString() !== client.numero.toString() ||
+      finalData.city !== client.cidade ||
+      finalData.district !== client.bairro ||
+      finalData.state !== client.estado;
+  
+      if (!hasChanged) {
+        toast({
+          title: "Nenhuma alteração detectada",
+          description: "Nenhum dado foi alterado.",
+          type: "background",
+          variant: "default",
+        });
+        return;
+      }
 
     try {
       const response = await fetch(`http://localhost:5672/client/${client.id}`, {
@@ -98,7 +123,7 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000);
+      }, 2000);
 
     } catch (error: any) {
       console.error("Erro ao editar cliente:", error);
@@ -155,7 +180,9 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
               <div className="grid grid-cols-5 items-center gap-4">
                 <FormLabel className="text-right">Telefone</FormLabel>
                 <FormControl className="col-span-3">
-                  <Input placeholder="(00) 00000-0000" {...field} />
+                  <ReactInputMask mask="(99) 99999-9999" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="(00) 00000-0000">
+                    {(inputProps: Props) => <Input {...inputProps} />}
+                  </ReactInputMask>
                 </FormControl>
               </div>
               <FormMessage className="text-center" />
@@ -168,17 +195,19 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
             control={form.control}
             name="cpf"
             render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CPF</FormLabel>
-                  <FormControl className="col-span-3">
-                    <Input placeholder="000.000.000-00" {...field} />
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">CPF</FormLabel>
+                <FormControl className="col-span-3">
+                  <ReactInputMask mask="999.999.999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="000.000.000-00">
+                    {(inputProps: Props ) => <Input {...inputProps} />}
+                  </ReactInputMask>
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
         )}
 
         {client.cnpj && (
@@ -186,17 +215,19 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
             control={form.control}
             name="cnpj"
             render={({ field }) => (
-              <FormItem>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <FormLabel className="text-right">CNPJ</FormLabel>
-                  <FormControl className="col-span-3">
-                    <Input placeholder="00.000.000/0000-00" {...field} />
-                  </FormControl>
-                </div>
-                <FormMessage className="text-center" />
-              </FormItem>
-            )}
-          />
+            <FormItem>
+              <div className="grid grid-cols-5 items-center gap-4">
+                <FormLabel className="text-right">CNPJ</FormLabel>
+                <FormControl className="col-span-3">
+                  <ReactInputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder="00.000.000/0000-00">
+                    {(inputProps: Props) => <Input {...inputProps} />}
+                  </ReactInputMask>
+                </FormControl>
+              </div>
+              <FormMessage className="text-center" />
+            </FormItem>
+          )}
+        />
         )}
 
         <Separator className="w-full px-5" />
@@ -288,8 +319,6 @@ export function FormEditarCliente({ client }: { client: ClientType }) {
             </SelectContent>
           </Select>
         </div>
-
-        
 
         <div className="flex items-end justify-end">
           <Button type="submit">Salvar</Button>

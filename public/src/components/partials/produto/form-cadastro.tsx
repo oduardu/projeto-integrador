@@ -16,9 +16,9 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 const formSchema = z.object({
-  code: z.string(),
-  name: z.string().min(3, { message: ''}).max(50),
-  description: z.string().min(3, { message: ''}).max(50),
+  code: z.string().min(1, "Digire o código.").max(50, "O código deve ter no máximo 50 caracteres."),
+  name: z.string().min(1, "Digite o nome.").max(50, "O nome deve ter no máximo 50 caracteres."),
+  description: z.string().min(1, "Digite a descrição.").max(50, "A descrição deve ter no máximo 50 caracteres."),
   stock: z.string().transform(value => parseInt(value, 10))
 })
 

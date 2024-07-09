@@ -20,16 +20,16 @@ import ReactInputMask, { Props } from "react-input-mask";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(3).max(50),
-  email: z.string().email().min(3).max(50),
-  phone: z.string(),
+  name: z.string().min(3, "O nome deve ter no minimo 3 caracteres").max(50, "O nome deve ter no máximo 50 caracteres"),
+  email: z.string().email("Digite um email válido."),
+  phone: z.string().min(1, "Digite o telefone"),
   cpf: z.string().optional(),
   cnpj: z.string().optional(),
-  city: z.string(),
+  city: z.string().min(1, "Digite a cidade.").max(50, "A cidade deve ter no máximo 50 caracteres."),
   state: z.string(),
-  street: z.string(),
-  district: z.string(),
-  number: z.string().min(1).max(5)
+  street: z.string().min(1, "Digite a rua.").max(50, "A rua deve ter no máximo 50 caracteres."),
+  district: z.string().min(1, "Digite o bairro.").max(50, "O bairro deve ter no máximo 50 caracteres."),
+  number: z.string().min(1, "Digite um número.").max(5, "O número deve ter no máximo 5 caracteres.")
 });
 
 export function FormCadastro() {

@@ -103,7 +103,6 @@ export const DataTable: React.FC = () => {
     }
   };
 
-  // Definição das colunas da tabela
   const columns: ColumnDef<ClientType>[] = [
     {
       accessorKey: "nome",
@@ -128,7 +127,7 @@ export const DataTable: React.FC = () => {
       header: "Telefone",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <div>{row.getValue("telefone")}</div>
+          <div>{row.getValue<number>("telefone").toString().replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, "($1) $2 $3-$4")}</div>
         </div>
       ),
     },

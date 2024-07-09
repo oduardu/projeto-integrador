@@ -16,10 +16,10 @@ import { z } from "zod"
 
 // Esquema de validação para o formulário
 const formSchema = z.object({
-  code: z.string().min(3, { message: ''}).max(10),
-  name: z.string().min(3, { message: ''}).max(50),
-  description: z.string().min(3, { message: ''}).max(50),
-  stock: z.string()
+  code: z.string().min(1, "Digire o código.").max(50, "O código deve ter no máximo 50 caracteres."),
+  name: z.string().min(1, "Digite o nome.").max(50, "O nome deve ter no máximo 50 caracteres."),
+  description: z.string().min(1, "Digite a descrição.").max(50, "A descrição deve ter no máximo 50 caracteres."),
+  stock: z.string().transform(value => parseInt(value, 10))
 })
 
 type ProductType = {
@@ -41,20 +41,34 @@ export function FormEditarCadastro({ product }: { product: ProductType }) {
     },
   })
 
-  // Função para lidar com o envio do formulário
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const cleanedData = {
+    const finalData = {
       ...data,
       stock: parseInt(data.stock, 10)
     };
 
+    const hasChanged =
+    finalData.code !== product.codigo ||
+    finalData.name !== product.nome ||
+    finalData.description !== product.descricao ||
+    finalData.stock.toString() !== product.quantidade_estoque.toString();
+
+  if (!hasChanged) {
+    toast({
+      title: "Nenhuma alteração detectada",
+      description: "Nenhum dado foi alterado.",
+      type: "background",
+      variant: "default",
+    });
+    return;
+}
     try {
       const response = await fetch(`http://localhost:5672/product/${product.codigo}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(cleanedData),
+        body: JSON.stringify(finalData),
       });
 
       const responseData = await response.json();
@@ -68,7 +82,7 @@ export function FormEditarCadastro({ product }: { product: ProductType }) {
 
       setTimeout(() => {
         window.location.reload();
-      }, 3000); 
+      }, 2000); 
 
     } catch (error: any) {
       console.error("Erro ao editar produto:", error);

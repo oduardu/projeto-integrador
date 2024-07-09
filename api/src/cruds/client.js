@@ -45,7 +45,7 @@ exports.updateClient = async (req, res) => {
 
     try {
 
-        await db.none('UPDATE cliente SET nome = $1, telefone = $2, cpf = $3, cnpj = $4 rua = $5, bairro = $6, numero = $7, cidade = $8, estado = $9, email = $10 WHERE id = $11',
+        await db.none('UPDATE cliente SET nome = $1, telefone = $2, cpf = $3, cnpj = $4, rua = $5, bairro = $6, numero = $7, cidade = $8, estado = $9, email = $10 WHERE id = $11',
         [name, phone, cpf, cnpj, street, district, number, city, state, email, identifier]);
 
         res.status(200).json({ title: 'Sucesso', description: 'Cliente atualizado com sucesso' });

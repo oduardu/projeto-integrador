@@ -20,13 +20,13 @@ import ReactInputMask, { Props } from "react-input-mask";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(3).max(50),
-  cnpj: z.string().optional(),
-  city: z.string(),
+  name: z.string().min(1, "Digite o nome.").max(50, "O nome deve ter no máximo 50 caracteres"),
+  cnpj: z.string().min(18, "O CNPJ deve ter 18 caracteres").max(18, "O CNPJ deve ter 18 caracteres"),
+  city: z.string().min(1, "Digite a cidade.").max(50, "A cidade deve ter no máximo 50 caracteres."),
   state: z.string(),
-  street: z.string(),
-  district: z.string(),
-  number: z.string(),
+  street: z.string().min(1, "Digite a rua.").max(50, "A rua deve ter no máximo 60 caracteres."),
+  district: z.string().min(1, "Digite o bairro.").max(50, "O bairro deve ter no máximo 50 caracteres."),
+  number: z.string().min(1, "Digite o número."),
 });
 
 export function FormCadastro() {
@@ -50,7 +50,6 @@ export function FormCadastro() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const cleanedData = {
       ...data,
-      cnpj: data.cnpj?.replace(/\D/g, ""),
       number: parseInt(data.number, 10),
       state: selectedState, 
     };

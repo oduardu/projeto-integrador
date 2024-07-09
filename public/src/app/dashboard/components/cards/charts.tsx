@@ -37,7 +37,7 @@ export function Component() {
 
       const response = await fetch("http://localhost:5672/product", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       });
 

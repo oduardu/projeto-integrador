@@ -107,7 +107,6 @@ export function FormEditarCadastro({ product }: { product: ProductType }) {
   return (
     <Form {...formRegister}>
       <form className="space-y-2" onSubmit={formRegister.handleSubmit(onSubmit)}>
-        {/* Campos do formulário */}
         <FormField
           control={formRegister.control}
           name="code"

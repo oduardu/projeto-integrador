@@ -58,8 +58,10 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+
     const finalData = {
       ...data,
+      
       number: parseInt(data.number, 10),
       state: selectedState,
     };
@@ -83,9 +85,10 @@ export function FormEditarCadastro({ supplier }: { supplier: SupplierType }) {
 }
 
     try {
+      let cleanCNPJ = supplier.cnpj.replace(/[^\d]+/g,'')
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`http://localhost:5672/supplier/${supplier.cnpj}`, {
+      const response = await fetch(`http://localhost:5672/supplier/${cleanCNPJ}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

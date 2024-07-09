@@ -99,7 +99,7 @@ export const DataTable: React.FC = () => {
         throw new Error("Erro ao remover fornecedor");
       }
   
-      setSuppliers(suppliers.filter(supplier => supplier.cnpj !== identifier));
+      setSuppliers(suppliers.filter(supplier => supplier.cnpj !== identifier.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')));
       toast({
         title: "Sucesso",
         description: "Fornecedor removido com sucesso",
@@ -175,7 +175,7 @@ export const DataTable: React.FC = () => {
               </DialogTrigger>
               <ModalEditarFornecedor supplier={supplier} />
             </Dialog>
-            <Button title={"Deletar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteSupplier(supplier.cnpj)}>
+            <Button title={"Deletar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteSupplier(supplier.cnpj.replace(/[^\d]+/g,''))}>
               <TrashIcon className="h-6 w-6" />
             </Button>
           </div>

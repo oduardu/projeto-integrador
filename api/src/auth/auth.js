@@ -2,6 +2,8 @@ const { db } = require("../database/connection")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+let blacklist = [];
+
 exports.register = async (req, res) => {
   try {
     const { name, email, type, password } = req.body
@@ -46,3 +48,16 @@ exports.login = async (req, res) => {
     res.status(500).json({ title: 'Erro', description: 'Erro ao se autenticar' })
   }
 }
+
+exports.logout = async (req, res) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ title: 'Erro', description: 'Token não fornecido' });
+  }
+
+  blacklist.push(token);
+  res.status(200).json({ title: 'Sucesso', description: 'Logout realizado com sucesso' });
+};
+
+exports.blacklist = blacklist;

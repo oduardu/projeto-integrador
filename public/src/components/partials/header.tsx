@@ -1,12 +1,12 @@
 'use client'
  
+import { Button } from '@/components/ui/button'
+import { NavigationMenu, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { MenuIcon, ScanBarcode } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
 import { ModeToggle } from './buttons/toggle-mode'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { NavigationMenu, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
  
 export function Header() {
   const pathname = usePathname()
@@ -22,10 +22,29 @@ export function Header() {
     { href: '/calculo', label: 'Calcúlos' },
   ]
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch('http://localhost:5672/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`, 
+        },
+        body: JSON.stringify({}), 
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Erro ao fazer logout: ${response.status} - ${response.statusText}`);
+      }
+  
+      localStorage.removeItem('token');
+      
+      router.push('/');
+    } catch (error: any) {
+      console.error(error.message);
+    }
   };
   
   return (

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from 'react';
@@ -72,6 +72,9 @@ export default function Login() {
   return (
     <>
       <main className="flex">
+      <Link href="/" className="absolute left-2 top-2 bg-zinc-50/50 hover:bg-zinc-800/50 rounded-full">
+          <ChevronLeft className="w-10 h-10 text-zinc-800 hover:text-zinc-50" />
+        </Link>
         <div className="flex-[1] bg-[url('https://images.unsplash.com/photo-1578911373434-0cb395d2cbfb?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] min-h-screen backdrop:blur-sm flex-col justify-center items-center text-7xl overflow-hidden text-zinc-100 md:flex hidden">
           <div className="backdrop-blur-[1.25px] flex flex-col p-5">
             <span className='font-semibold'>Dell Angelo</span>

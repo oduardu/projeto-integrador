@@ -32,7 +32,7 @@ export function Header() {
     <header className='p-4 border-b-2 border-zinc-300 flex items-center gap-4'>
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="lg:hidden">
+          <Button variant="ghost" size="icon" className="lg:hidden">
             <MenuIcon className="h-6 w-6" />
             <span className="sr-only">Menu</span>
           </Button>
@@ -57,7 +57,7 @@ export function Header() {
         </SheetContent>
       </Sheet>
       <div className="w-[150px]">
-        <Link href="#" className="mr-6 hidden lg:flex-col lg:justify-center lg:items-center lg:flex" prefetch={false}>
+        <Link href="/dashboard" className="mr-6 hidden lg:flex-col lg:justify-center lg:items-center lg:flex" prefetch={false}>
           <span className='font-semibold'>Dell Angelo</span>
           <span className='font-extralight'>Winehouse</span>
         </Link>
@@ -81,35 +81,14 @@ export function Header() {
         </NavigationMenu>
       </div>
       <div>
-        <Button size={'default'} variant={'default'} className='ml-auto' onClick={handleLogout}>Sair</Button>
-      </div>
-      
-      {/* <Link href='/dashboard' className='flex flex-col justify-center items-center flex-[1]'>
-        <span className='font-semibold'>Dell Angelo</span>
-        <span className='font-extralight'>Winehouse</span>
-      </Link>
-      <div className='flex gap-3 flex-row flex-[3]'>
-        {links.map((link) => (
-              <Link key={link.label} href={link.href}>
-                <Button
-                size={'default'}
-                  variant={pathname === link.href ? 'link_selected' : 'link'}
-                >
-                  {link.label}
-                </Button>
-              </Link>
-          ))}
-      </div>
-      <div>
           <Link href={'/solicitacao-compra'}><Button size={'default'} variant={'outline'} className='flex flex-row gap-3'><ScanBarcode size={16} /> Solicitação de Compra</Button></Link>
       </div>
       <div>
           <ModeToggle />
       </div>
       <div>
-          <Button size={'default'} variant={'default'} onClick={handleLogout}>Sair</Button>
-      </div> */}
-      
+        <Button size={'default'} variant={'default'} className='ml-auto' onClick={handleLogout}>Sair</Button>
+      </div>
     </header>
   )
 }

@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <header className="bg-zinc-100 px-4 pt-2 lg:px-6 h-24 flex items-center w-full shadow-sm xl:fixed">
-      <Link href='/' className='flex flex-col justify-center items-center text-2xl'>
+      <Link href='/' className='flex flex-col justify-center items-center text-2xl text-zinc-900'>
         <span className='font-semibold'>Dell Angelo</span>
         <span className='font-extralight'>Winehouse</span>
       </Link>
@@ -50,12 +50,12 @@ export default function Home() {
       </header>
       <main className="flex-1">
         <section className="w-full pt-12 md:pt-24 lg:pt-32 bg-zinc-100">
-          <div className="container grid max-w-[1300px] mx-auto gap-4 p-4 sm:p-6 md:p-10 md:grid-cols-2 md:gap-16 shadow-sm">
+          <div className="container grid max-w-[1300px] mx-auto gap-4 p-4 sm:p-6 md:p-10 md:grid-cols-2 md:gap-16">
             <div>
               <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] text-zinc-800">
                 Descubra os vinhos premiados da Dell Angelo Winehouse
               </h1>
-              <p className="mx-auto max-w-[700px] text-zinc-600 md:text-xl dark:text-zinc-200">
+              <p className="mx-auto max-w-[700px] text-zinc-600 md:text-xl">
                 Tradição, qualidade e paixão pelo vinho em cada garrafa.
               </p>
               <div className="mt-6">
@@ -70,7 +70,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-zinc-200/55">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-zinc-50">
           <div className="container max-w-[1200px] px-4 md:px-6">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
               <div>
@@ -170,7 +170,7 @@ export default function Home() {
                   premiados e um tour pelos nossos vinhedos.
                 </p>
               </div>
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3558.488389921103!2d-52.413058199999995!3d-26.8879911!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94e4c3cfbed12535%3A0xd8836ed465a1f5f!2sR.%20Henrique%20Dias%2C%20349%20-%20Matinho%2C%20Xanxer%C3%AA%20-%20SC%2C%2089820-000!5e0!3m2!1spt-BR!2sbr!4v1717888214717!5m2!1spt-BR!2sbr" width="600" height="450" className="b-0" loading="lazy"></iframe>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3558.488389921103!2d-52.413058199999995!3d-26.8879911!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94e4c3cfbed12535%3A0xd8836ed465a1f5f!2sR.%20Henrique%20Dias%2C%20349%20-%20Matinho%2C%20Xanxer%C3%AA%20-%20SC%2C%2089820-000!5e0!3m2!1spt-BR!2sbr!4v1717888214717!5m2!1spt-BR!2sbr" className="w-[100%] xl:w-[600px] h-[450px] b-0" loading="lazy"></iframe>
             </div>
           </div>
         </section>

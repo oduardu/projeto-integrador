@@ -4,7 +4,7 @@ import { ModalCadastro } from "@/components/partials/fornecedor/modal-cadastro";
 import { ModalEditarFornecedor } from "@/components/partials/fornecedor/modal-editar-fornecedor";
 import ModalTodasInformacoes from "@/components/partials/fornecedor/modal-todas-informacoes";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -175,9 +175,25 @@ export const DataTable: React.FC = () => {
               </DialogTrigger>
               <ModalEditarFornecedor supplier={supplier} />
             </Dialog>
-            <Button title={"Deletar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm"  onClick={() => deleteSupplier(supplier.cnpj.replace(/[^\d]+/g,''))}>
-              <TrashIcon className="h-6 w-6" />
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button title={"Deletar cadastro de " + supplier.nome} variant="ghost" className="shadow-sm">
+                  <TrashIcon className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[325px]">
+                <DialogHeader>
+                  <DialogTitle>Deletar fornecedor</DialogTitle>
+                  <DialogDescription>
+                    Deseja realmente deletar o fornecedor <strong>{supplier.nome}</strong>?
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogClose className="flex flex-row justify-between">
+                  <Button variant="default">Cancelar</Button>
+                  <Button onClick={() => deleteSupplier(supplier.cnpj.replace(/[^\d]+/g,''))} variant="destructive">Deletar</Button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },

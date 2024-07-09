@@ -17,7 +17,7 @@ type ReturnJsonApi = {
 }
 
 const formSchema = z.object({
-  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres."),
+  name: z.string().min(1, "Insira o nome."),
   email: z.string().email("Digite um email válido."),
   password: z.string().min(1, "Insira uma senha."),
 });
@@ -95,7 +95,7 @@ export default function Register() {
                   <Input id="name" type="text" placeholder="Nome Completo" alt="Digite seu nome completo" value={name} onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className="grid items-center content-center gap-1.5">
-                  <Label className="text-zinc-200">Mail</Label>
+                  <Label className="text-zinc-200">Email</Label>
                   <Input id="email" type="email" placeholder="nome@email.com" alt="Digite seu email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="grid items-center content-center gap-1.5">

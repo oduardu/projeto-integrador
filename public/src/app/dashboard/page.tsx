@@ -43,15 +43,15 @@ export default function Home() {
       <div className="min-h-screen">
         <Header />
         <main className="flex flex-col items-center">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="col-span-2 md:col-span-2">
+          <div className="grid gap-4 md:grid-cols-3 w-full p-4">
+            <div className="md:col-span-2">
               <Calendar />
             </div>
-            <div className="md:col-span-1 col-span-2">
+            <div className="md:col-span-1">
               <Orders orders={orders} />
             </div>
           </div>
-          <div className="grid gap-4 mt-4 md:grid-cols-3">
+          <div className="grid w-full p-4 gap-4 mt-4 md:grid-cols-3">
             <Chart />
             <BottleStock wineStock={{bottle: 100}} />
             <GrapeStockCard grapeStock={{ fullStock: "1000" }} />

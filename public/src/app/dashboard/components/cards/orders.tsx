@@ -14,7 +14,7 @@ export default function Orders(
   { orders } : { orders: OrdersType[] }
 ) {
   return (
-      <Card className="w-96">
+      <Card>
         <CardHeader>
           <CardTitle>Solicitações de Compra</CardTitle>
         </CardHeader>

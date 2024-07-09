@@ -1,10 +1,12 @@
 'use client'
  
-import { ScanBarcode } from 'lucide-react'
+import { MenuIcon, ScanBarcode } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { ModeToggle } from './buttons/toggle-mode'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { NavigationMenu, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
  
 export function Header() {
   const pathname = usePathname()
@@ -27,8 +29,62 @@ export function Header() {
   };
   
   return (
-    <nav className='p-4 border-b-2 border-zinc-300 flex items-center gap-4'>
-      <Link href='/dashboard' className='flex flex-col justify-center items-center flex-[1]'>
+    <header className='p-4 border-b-2 border-zinc-300 flex items-center gap-4'>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="icon" className="lg:hidden">
+            <MenuIcon className="h-6 w-6" />
+            <span className="sr-only">Menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left">
+          <Link href="/dashboard" className="mr-6 flex-col justify-center items-center flex" prefetch={false}>
+            <span className='font-semibold'>Dell Angelo</span>
+            <span className='font-extralight'>Winehouse</span>
+          </Link>
+          <div className="grid gap-2 py-6">
+          {links.map((link) => (
+                <Link key={link.label} href={link.href} className="flex w-full items-center py-2 text-lg font-semibold">
+                  <Button
+                  size={'default'}
+                    variant={pathname === link.href ? 'link_selected' : 'link'}
+                  >
+                    {link.label}
+                  </Button>
+                </Link>
+          ))}
+          </div>
+        </SheetContent>
+      </Sheet>
+      <div className="w-[150px]">
+        <Link href="#" className="mr-6 hidden lg:flex-col lg:justify-center lg:items-center lg:flex" prefetch={false}>
+          <span className='font-semibold'>Dell Angelo</span>
+          <span className='font-extralight'>Winehouse</span>
+        </Link>
+      </div>
+      <div className="flex w-full justify-center">
+        <NavigationMenu className="hidden lg:flex">
+          <NavigationMenuList>
+          {links.map((link) => (
+            <NavigationMenuLink asChild>
+                <Link key={link.label} href={link.href}>
+                  <Button
+                  size={'default'}
+                    variant={pathname === link.href ? 'link_selected' : 'link'}
+                  >
+                    {link.label}
+                  </Button>
+                </Link>
+              </NavigationMenuLink>
+          ))}
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
+      <div>
+        <Button size={'default'} variant={'default'} className='ml-auto' onClick={handleLogout}>Sair</Button>
+      </div>
+      
+      {/* <Link href='/dashboard' className='flex flex-col justify-center items-center flex-[1]'>
         <span className='font-semibold'>Dell Angelo</span>
         <span className='font-extralight'>Winehouse</span>
       </Link>
@@ -52,8 +108,8 @@ export function Header() {
       </div>
       <div>
           <Button size={'default'} variant={'default'} onClick={handleLogout}>Sair</Button>
-      </div>
+      </div> */}
       
-    </nav>
+    </header>
   )
 }

@@ -139,11 +139,11 @@ CREATE TABLE etapa_producao (
 
 INSERT INTO cliente (cpf, cnpj, nome, email, telefone, rua, bairro, numero, cidade, estado)
 VALUES
-('123.456.789-00', NULL, 'Cliente 1', 'cliente1@example.com', 1234567890, 'Rua A', 'Bairro A', 1, 'Cidade A', 'SC'),
-('987.654.321-00', NULL, 'Cliente 2', 'cliente2@example.com', 2345678901, 'Rua B', 'Bairro B', 2, 'Cidade B', 'PB'),
-(NULL, '12.345.678/0001-00', 'Cliente 3', 'cliente3@example.com', 3456789012, 'Rua C', 'Bairro C', 3, 'Cidade C', 'CE'),
-('111.222.333-44', NULL, 'Cliente 4', 'cliente4@example.com', 4567890123, 'Rua D', 'Bairro D', 4, 'Cidade D', 'PR'),
-(NULL, '98.765.432/0001-99', 'Cliente 5', 'cliente5@example.com', 5678901234, 'Rua E', 'Bairro E', 5, 'Cidade E', 'SP');
+('123.456.789-00', NULL, 'Cliente 1', 'cliente1@example.com', 12345678901, 'Rua A', 'Bairro A', 1, 'Cidade A', 'SC'),
+('987.654.321-00', NULL, 'Cliente 2', 'cliente2@example.com', 23456789012, 'Rua B', 'Bairro B', 2, 'Cidade B', 'PB'),
+(NULL, '12.345.678/0001-00', 'Cliente 3', 'cliente3@example.com', 34567890123, 'Rua C', 'Bairro C', 3, 'Cidade C', 'CE'),
+('111.222.333-44', NULL, 'Cliente 4', 'cliente4@example.com', 45678901234, 'Rua D', 'Bairro D', 4, 'Cidade D', 'PR'),
+(NULL, '98.765.432/0001-99', 'Cliente 5', 'cliente5@example.com', 56789012345, 'Rua E', 'Bairro E', 5, 'Cidade E', 'SP');
 
 INSERT INTO fornecedor (cnpj, nome, rua, bairro, numero, cidade, estado)
 VALUES  
